@@ -15,7 +15,7 @@ Pandas looks like a hundred unrelated methods. It is really a handful of ideas t
 
 ```mermaid
 flowchart LR
-    F["Foundations<br/>Series, DataFrame,<br/>dtypes, inspect"] --> SEL["Selecting data<br/>columns, loc/iloc,<br/>boolean"]
+    F["Foundations<br/>Series, DataFrames,<br/>reading files, dtypes"] --> SEL["Selecting data<br/>columns, loc/iloc,<br/>boolean"]
     SEL --> IDX["The index<br/>set and reset"]
     IDX --> CLEAN["Cleaning data<br/>missing, dupes,<br/>rename, replace, dtypes"]
     CLEAN --> GRP["Grouping and reshaping<br/>groupby, aggregate, pivot"]

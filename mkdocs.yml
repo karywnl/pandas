@@ -79,6 +79,7 @@ nav:
   - Foundations:
       - Series: foundations/series.md
       - Building a DataFrame: foundations/dataframe.md
+      - Reading and writing data: foundations/reading-data.md
       - Inspecting a DataFrame: foundations/attributes.md
       - Data types: foundations/dtypes.md
       - head and tail: foundations/head-tail.md

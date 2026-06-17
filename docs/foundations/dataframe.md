@@ -132,6 +132,7 @@ Pandas infers each column's type from its values: all integers give `int64`, any
 
 !!! connect "From here the whole workflow opens up"
     - Each column is a [**Series**](series.md), and they all share one row index.
+    - Building from a dict is for learning; real data is loaded from a file with [**reading and writing data**](reading-data.md).
     - Once built, you [**inspect**](attributes.md) it with `shape`, `dtypes`, and `info`, then [**select**](../selection/loc-iloc.md) the parts you want.
     - The `set_index` shortcut shown here gets its own chapter on [setting the index](../indexing/set-index.md).
 
