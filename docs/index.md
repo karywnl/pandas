@@ -7,42 +7,62 @@ Most pandas resources fall into one of two traps. The beginner ones show you *wh
 Think of it like a good friend who happens to know pandas really well, sitting next to you, drawing on a whiteboard.
 
 !!! intuition "How to read this site"
-    Every concept page is layered. Skim the **intuition** box at the top if you just need the gist. Read the **how it works** section to actually use it. Drop into **under the hood** when you want to know why pandas does the strange thing it does. You never have to read all of it at once.
+    Every concept page is layered. Skim the **intuition** box at the top if you just need the gist. Read the **how it works** section to actually use it. Drop into **under the hood** when you want to know why pandas does the strange thing it does. You never have to read all of it at once. Every code example here is verified against **pandas 3.0**.
 
 ## The map
 
-Pandas looks like a hundred unrelated methods. It is really a small number of ideas that keep showing up. Here is the lay of the land, and how the pieces lean on each other.
+Pandas looks like a hundred unrelated methods. It is really a handful of ideas that keep showing up, and they build on each other left to right.
 
 ```mermaid
-flowchart TD
-    S[Series<br/>one labelled column] --> D[DataFrame<br/>a stack of Series]
-    D --> I[Inspect<br/>shape, dtypes, head]
-    D --> SEL[Select data]
-    SEL --> LOC[loc and iloc]
-    SEL --> BOOL[boolean indexing]
-    LOC --> IDX[the Index<br/>set_index, reset_index]
-    BOOL --> LOC
-    IDX --> CLEAN[Clean<br/>missing, dupes, dtypes]
-    CLEAN --> GRP[GroupBy<br/>split, apply, combine]
-    GRP --> AGG[Aggregate and pivot]
-
-    style LOC fill:#7e57c2,color:#fff
+flowchart LR
+    F["Foundations<br/>Series, DataFrame,<br/>dtypes, inspect"] --> SEL["Selecting data<br/>columns, loc/iloc,<br/>boolean"]
+    SEL --> IDX["The index<br/>set and reset"]
+    IDX --> CLEAN["Cleaning data<br/>missing, dupes,<br/>rename, replace, dtypes"]
+    CLEAN --> GRP["Grouping and reshaping<br/>groupby, aggregate, pivot"]
+    SEL --> CLEAN
+    style F fill:#5e35b1,color:#fff
+    style SEL fill:#5e35b1,color:#fff
+    style IDX fill:#5e35b1,color:#fff
+    style CLEAN fill:#5e35b1,color:#fff
+    style GRP fill:#5e35b1,color:#fff
 ```
 
-The highlighted box, **loc and iloc**, is where we start. It is the doorway to almost everything else: filtering, cleaning, and grouping all stand on top of knowing how to point at the exact rows and columns you mean.
+Start at **Foundations** to learn what a Series and a DataFrame even are, move through **Selecting** and **Cleaning**, and finish with **Grouping**, where you answer real "per category" questions. Each chapter ends by linking to the ones it leans on, so you can follow the threads in any direction.
 
-## Start here
+## Pick a starting point
 
 <div class="grid cards" markdown>
 
--   :material-target:{ .lg .middle } **loc and iloc**
+-   :material-cube-outline:{ .lg .middle } **Foundations**
 
     ---
 
-    The two ways to point at data: by *label* and by *position*. Get this right and half of pandas stops being scary.
+    What a Series and a DataFrame really are, how to inspect one, and the data types that decide everything.
 
-    [:octicons-arrow-right-24: Read it](selection/loc-iloc.md)
+    [:octicons-arrow-right-24: Start here](foundations/series.md)
+
+-   :material-target:{ .lg .middle } **Selecting data**
+
+    ---
+
+    Point at the exact rows and columns you mean: by label, by position, and by condition.
+
+    [:octicons-arrow-right-24: loc and iloc](selection/loc-iloc.md)
+
+-   :material-broom:{ .lg .middle } **Cleaning data**
+
+    ---
+
+    Handle missing values, drop duplicates, rename, replace, and fix wrong types.
+
+    [:octicons-arrow-right-24: Missing values](cleaning/missing-values.md)
+
+-   :material-chart-bar:{ .lg .middle } **Grouping and reshaping**
+
+    ---
+
+    Split, apply, combine. Answer "per region" and "per month" questions and pivot the results into a grid.
+
+    [:octicons-arrow-right-24: GroupBy](grouping/groupby.md)
 
 </div>
-
-More chapters are on the way. Each one will plug into this same map.

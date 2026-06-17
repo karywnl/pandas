@@ -25,7 +25,7 @@ movies = pd.DataFrame(
     {
         "year":       [1999, 2008, 2014, 2019, 2010],
         "rating":     [8.7,  9.0,  8.6,  8.4,  8.8],
-        "box_office": [463,  1004, 677,  53,   829],  # millions of dollars
+        "box_office": [463,  1004, 677,  263,  829],  # millions of dollars
     },
     index=["The Matrix", "The Dark Knight", "Interstellar", "Parasite", "Inception"],
 )
@@ -41,7 +41,7 @@ This is what it looks like, with both labelling systems drawn in. The names down
 pos 0 → | The Matrix     |  1999  |  8.7   |    463     |
 pos 1 → | The Dark Knight|  2008  |  9.0   |    1004    |
 pos 2 → | Interstellar   |  2014  |  8.6   |    677     |
-pos 3 → | Parasite       |  2019  |  8.4   |     53     |
+pos 3 → | Parasite       |  2019  |  8.4   |    263     |
 pos 4 → | Inception      |  2010  |  8.8   |    829     |
         +----------------+--------+--------+------------+
           ^ row labels       ^ the columns, counted by position
@@ -75,6 +75,8 @@ movies.iloc[-1]           # last row -> Inception
 
 Notice `movies.iloc[0:3]` gives you positions 0, 1, and 2, but stops *before* 3. That is the normal Python slicing rule you already know from lists: the right end is excluded. Hold that thought, because `loc` is about to break it on purpose.
 
+**In one line:** `iloc` counts seats from zero and, just like a Python list, excludes the right end of a slice.
+
 ### loc: pointing by name
 
 `loc` ignores positions and uses the labels you can actually see.
@@ -88,7 +90,9 @@ movies.loc[["The Matrix", "Inception"]]      # two named rows
 movies.loc[movies["rating"] > 8.7]           # every row where rating beats 8.7
 ```
 
-That last line is the one you will use constantly. `loc` happily accepts a column of True and False values and keeps only the True rows. We will come back to that friendship in [boolean indexing](#where-this-connects).
+That last line is the one you will use constantly. `loc` happily accepts a column of True and False values and keeps only the True rows. That friendship has its own chapter: [boolean indexing](boolean-indexing.md).
+
+**In one line:** `loc` finds rows and columns by their labels, and it is the tool you will reach for most when filtering.
 
 ### Selecting rows and columns together
 
@@ -133,9 +137,17 @@ movies.loc[["Parasite"]]      # DataFrame (one row, still a table)
 
 The extra brackets are not decoration. They change the *type* of thing you get back, which changes what you can do with it next. If a later line complains that a Series does not have some DataFrame method, this is usually why.
 
+??? question "Quick check: predict it"
+    Using the `movies` table from the top of the page, what does `movies.iloc[1:3]` give you, and is it a Series or a DataFrame?
+
+    **Answer:** Positions 1 and 2 only, because `iloc` excludes the right end. That is **The Dark Knight** and **Interstellar**. It comes back as a **DataFrame**, because a slice returns more than one row. (Compare `movies.iloc[1]`, a single position, which returns a Series.)
+
 ## Under the hood
 
 Here is where we go all the way down. None of what follows is trivia, it explains the two bugs that bite pandas learners most often.
+
+!!! tip "New here? You have permission to skip this."
+    Everything below explains *why* pandas behaves the way it does. It is the good stuff, but you do not need a single word of it to start using `loc` and `iloc` today. If your brain is full, jump straight to the [cheat sheet](#quick-reference) and come back to this part later. Nothing here is required to be productive right now.
 
 ### Why loc slices are inclusive but iloc slices are not
 
@@ -152,6 +164,11 @@ loc["A":"C"]  labels:    "A" "B" "C"
 With positions, "stop before 3" is easy, because 3 minus 1 is 2. Numbers have a built in "previous". But labels do not. If your index is movie titles, or dates, or the strings `"mon"`, `"tue"`, `"wed"`, there is no arithmetic that gives you "the label just before Interstellar". So pandas made a deliberate choice: **label slices include both ends**, because excluding the end would require a "previous label" that does not exist in general. Positions keep the normal Python exclusive rule because they *can*.
 
 So the rule to memorise is short: **`iloc` is exclusive on the right like a Python list. `loc` is inclusive on both ends because labels have no arithmetic.**
+
+??? question "Quick check: inclusive or exclusive?"
+    How many rows does `movies.loc["The Dark Knight":"Parasite"]` return?
+
+    **Answer:** **Three:** The Dark Knight, Interstellar, and Parasite. `loc` includes the final label, so Parasite is kept. If slicing dropped the right end the way `iloc` does, Parasite would vanish and you would get only two.
 
 ### The integer index trap
 
@@ -177,7 +194,11 @@ s.loc[20]      # label 20     -> 200
 
 `s.iloc[0]` and `s.loc[10]` happen to point at the same value here, but for completely different reasons. One counted to position zero. The other looked up the label `10`. The instant your labels stop lining up with positions, they disagree.
 
-This is not a weird edge case you can ignore. It happens every time you filter a DataFrame. To watch it happen, here is our movies table again (so you do not have to scroll), except this time imagine we loaded it with the plain default index, the numbers 0 to 4, instead of titles. Right now each label matches its position perfectly:
+This is not a weird edge case you can ignore. It happens every time you filter a DataFrame. To watch it happen, let us take the very same movies but swap the title index for the plain default index (the numbers 0 to 4), so that labels and positions start out matching perfectly:
+
+```python
+films = movies.reset_index(drop=True)   # same data, the index is now 0..4
+```
 
 ```text
         index   year   rating
@@ -192,7 +213,7 @@ This is not a weird edge case you can ignore. It happens every time you filter a
 Now we keep only the films rated above 8.6:
 
 ```python
-top = movies[movies["rating"] > 8.6]
+top = films[films["rating"] > 8.6]
 ```
 
 ```text
@@ -215,6 +236,11 @@ top.iloc[4]   # position 4? only 3 rows now -> IndexError
 
 !!! tip "The habit that saves you"
     Pick `loc` when you are thinking in names and `iloc` when you are thinking in seat numbers, and never let the choice be an accident. If you just filtered and now want "the first surviving row", that is a *position* idea, so use `iloc[0]`, not `loc[0]`.
+
+??? question "Quick check: spring the trap"
+    After `top = films[films['rating'] > 8.6]`, the survivors are labelled `[0, 1, 4]` (positions `[0, 1, 2]`). What does `top.iloc[2]` return, and what does `top.loc[2]` return?
+
+    **Answer:** `top.iloc[2]` is the third surviving row *by position*, which is **Inception** (whose label happens to be 4). `top.loc[2]` hunts for the *label* 2, which was filtered away, so it raises a **`KeyError`**. Same number, opposite outcomes. That is the whole trap in one example.
 
 ### Views, copies, and the famous warning
 
@@ -241,7 +267,7 @@ The trouble is that whether you get a view or a copy can depend on the dtypes an
 movies[movies["year"] > 2000]["rating"] = 9.9
 ```
 
-Read that as pandas does, left to right. First `movies[movies["year"] > 2000]` runs and produces some new object, maybe a view, maybe a copy, you genuinely cannot tell. Then `["rating"] = 9.9` writes into *that* object. If it was a copy, your edit lands in a temporary thing that gets thrown away a microsecond later, and the real `movies` never changes. Pandas cannot be sure your edit will stick, so it raises:
+Read that as pandas does, left to right. First `movies[movies["year"] > 2000]` runs and produces some new object, maybe a view, maybe a copy, you genuinely cannot tell. Then `["rating"] = 9.9` writes into *that* object. If it was a copy, your edit lands in a temporary thing that gets thrown away a microsecond later, and the real `movies` never changes. On pandas 2.x and earlier, pandas could not be sure your edit would stick, so it raised a warning:
 
 ```text
 SettingWithCopyWarning: A value is trying to be set on a copy of a
@@ -260,8 +286,8 @@ Because it is a single `loc` on the original `movies`, there is no in between ob
 !!! danger "The one rule that prevents the warning"
     Never write `df[...][...] = value` with two sets of brackets on the left of an `=`. Always collapse it into one accessor: `df.loc[rows, cols] = value`. Selecting with two brackets to *read* is usually fine. Assigning through two brackets is the trap.
 
-!!! info "What changed in pandas 2.0+ (Copy on Write)"
-    Modern pandas can run in a mode called Copy on Write, and it becomes the default from pandas 3.0. In this mode the rules get simpler and safer: every slice behaves as if it were its own copy, and pandas only physically copies the memory at the last possible moment, when you actually write. The upside for you is that the confusing view vs copy guessing game mostly disappears, and chained assignment simply will not silently edit the original anymore. The habit above (one `loc` call to assign) is still the correct way to write, and it works perfectly in both the old and new worlds, so you lose nothing by learning it now.
+!!! info "What pandas 3.0 changes here (Copy on Write)"
+    This site is written for pandas 3.0, and 3.0 quietly cleans up most of this mess with a behaviour called Copy on Write, which is now always on and can no longer be switched off. The idea: every slice behaves as if it owns a private copy, and pandas only physically copies the memory at the last possible moment, the instant you actually write to it. So the old view versus copy guessing game is essentially over. The chained assignment above behaves more helpfully now too. Instead of the vague old `SettingWithCopyWarning`, pandas raises a clearer `ChainedAssignmentError` warning and simply leaves your real data unchanged, so you find out immediately instead of silently getting nothing. The takeaway has not moved: assign with one `loc` call. If you are still on an older pandas 2.x, you can switch this safer behaviour on early with `pd.set_option("mode.copy_on_write", True)`. Learning the one `loc` habit now keeps your code correct on every version.
 
 ### at and iat: the express lane for one cell
 
@@ -276,7 +302,7 @@ Same idea as `loc` and `iloc` (name vs position), just specialised for a single 
 
 ### Why a labelled index is fast
 
-One more reason `loc` is not just convenient but genuinely efficient. When you set a meaningful index, pandas builds a hash table behind it. Looking up `movies.loc["Parasite"]` is then close to instant, an O(1) jump, the same way a Python dictionary finds a key. Compare that to searching a plain column for a match, like `movies[movies["title"] == "Parasite"]`, which has to scan every row, an O(n) walk. For a handful of movies the difference is invisible. For a few million rows it is the difference between instant and a noticeable pause. This is why setting a good index (a topic of its own) pays off, and `loc` is how you cash in that speed.
+One more reason `loc` is not just convenient but genuinely efficient. When you set a meaningful index, pandas builds a hash table behind it. Looking up `movies.loc["Parasite"]` is then close to instant, an O(1) jump, the same way a Python dictionary finds a key. Compare that with scanning an ordinary column, like `movies[movies["year"] == 2019]`, which has to walk every row to find the matches, an O(n) operation. For a handful of movies the difference is invisible. For a few million rows it is the difference between instant and a noticeable pause. This is why setting a good index (a topic of its own) pays off, and `loc` is how you cash in that speed.
 
 ## Quick reference
 
@@ -296,7 +322,7 @@ One more reason `loc` is not just convenient but genuinely efficient. When you s
 ## Where this connects
 
 !!! connect "loc and iloc plug into the rest of pandas like this"
-    - **Boolean indexing** is just `loc` being fed a column of True and False. When you write `df[df["rating"] > 8]`, you are using a mask, and doing it through `df.loc[mask, cols]` is how you filter rows and pick columns in the same move. *(chapter coming soon)*
+    - [**Boolean indexing**](boolean-indexing.md) is just `loc` being fed a column of True and False. When you write `df[df["rating"] > 8]`, you are using a mask, and doing it through `df.loc[mask, cols]` is how you filter rows and pick columns in the same move.
     - **Setting the index** (`set_index`) is what gives `loc` meaningful names to look up, and turns on that fast O(1) hash lookup described above. *(chapter coming soon)*
     - **Resetting the index** (`reset_index`) is the cleanup you run after filtering, precisely to fix the "labels no longer match positions" trap from this page. *(chapter coming soon)*
     - **The SettingWithCopyWarning** you will meet again in **handling missing values** and **replacing values**, because filling and replacing are assignments, and the same one `loc` call rule keeps them safe. *(chapter coming soon)*

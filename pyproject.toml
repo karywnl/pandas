@@ -1,7 +1,13 @@
 [project]
-name = "pandas"
+name = "pandas-properly"
 version = "0.1.0"
+description = "A beginner-first, visual, deeply connected guide to pandas."
 requires-python = ">=3.12"
 dependencies = [
     "mkdocs-material>=9.7.6",
+]
+
+[dependency-groups]
+dev = [
+    "pandas>=3.0",
 ]
