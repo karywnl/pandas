@@ -1,4 +1,4 @@
-# Pandas, Properly
+# Pandas
 
 Welcome. This is not another cheat sheet, and it is not the official docs either.
 
