@@ -6,6 +6,8 @@ copyright: Written for pandas 3.0 &middot; last reviewed June 2026
 
 theme:
   name: material
+  logo: assets/logo.svg
+  favicon: assets/favicon.svg
   palette:
     - scheme: default
       primary: indigo
