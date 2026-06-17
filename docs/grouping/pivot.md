@@ -113,19 +113,84 @@ sales.pivot_table(index="region", columns="product", values="revenue", aggfunc="
 
 ## Totals and missing cells
 
-Two options make `pivot_table()` more useful.
+Two options turn a bare grid into the kind of summary table you would actually hand to someone: `margins` for totals, `fill_value` for the gaps.
+
+### margins: a row and column of totals
+
+`margins=True` adds one extra row and one extra column holding the **grand totals**, computed with the same `aggfunc`. Picking up the sales grid from above:
 
 ```python
-# add a row and column of totals (a "grand total")
 sales.pivot_table(index="region", columns="product", values="revenue",
                   aggfunc="sum", margins=True)
-
-# show empty (region, product) combinations as 0 instead of NaN
-sales.pivot_table(index="region", columns="product", values="revenue",
-                  aggfunc="sum", fill_value=0)
+# product    A    B  All
+# region
+# East     170   60  230     <- East's row total
+# West      80  130  210
+# All      250  190  440     <- 440 is the grand total
 ```
 
-`margins=True` adds the totals row and column. `fill_value` replaces the `NaN` that appears when a combination simply has no data.
+The `All` column sums across each row, the `All` row sums down each column, and the bottom-right `440` is everything added up. It is the same total whether you read it across or down, which is a quick sanity check that your grid is complete.
+
+```text
+  +-------+-----+-----+-----+
+  |       |   A |   B | All |
+  +-------+-----+-----+-----+
+  | East  | 170 |  60 | 230 |
+  | West  |  80 | 130 | 210 |
+  | All   | 250 | 190 | 440 |
+  +-------+-----+-----+-----+
+     the All column holds row totals:    170 + 60  = 230
+     the All row holds column totals:    170 + 80  = 250
+     the corner is the grand total:      230 + 210 = 440
+```
+
+Prefer a clearer label? Pass `margins_name`:
+
+```python
+sales.pivot_table(index="region", columns="product", values="revenue",
+                  aggfunc="sum", margins=True, margins_name="Total")
+# the "All" row and column are now labelled "Total"
+```
+
+**In one line:** `margins=True` bolts a totals row and column onto the grid using your chosen `aggfunc`, with `All` as the default label.
+
+### fill_value: holes in the grid
+
+A pivot grid has a cell for **every** (row, column) pair, but real data rarely fills all of them. When a combination never occurs, that cell has nothing to aggregate, so pandas puts a `NaN` there. Say East also sold a product C, but West never did:
+
+```python
+sales_c = pd.DataFrame({
+    "region":  ["East", "East", "West", "West", "East", "East"],
+    "product": ["A", "B", "A", "B", "A", "C"],
+    "revenue": [100, 60, 80, 130, 70, 40],
+})
+
+sales_c.pivot_table(index="region", columns="product", values="revenue", aggfunc="sum")
+# product      A      B     C
+# region
+# East     170.0   60.0  40.0
+# West      80.0  130.0   NaN     <- West never sold C, so this cell is empty
+```
+
+The `NaN` marks "no West/C sale ever happened". Often you would rather read that as a **0**. That is what `fill_value` does:
+
+```python
+sales_c.pivot_table(index="region", columns="product", values="revenue",
+                    aggfunc="sum", fill_value=0)
+# product    A    B   C
+# region
+# East     170   60  40
+# West      80  130   0     <- the gap is now a clean 0
+```
+
+Notice the numbers also lost their `.0`. That is not cosmetic, and it is the real reason `fill_value` matters beyond looks (next section).
+
+**In one line:** empty (row, column) combinations come back as `NaN`; `fill_value=0` rewrites those gaps so the grid reads cleanly.
+
+??? question "Quick check: where does the NaN come from?"
+    In the `sales_c` table, why is the West/C cell `NaN` and not `0`? And what does `fill_value=0` change about the rest of the column besides that one cell?
+
+    **Answer:** There is no West/C row in the data at all, so there is nothing for `aggfunc="sum"` to add up; pandas marks the empty cell `NaN` rather than inventing a 0. Turning on `fill_value=0` swaps that `NaN` for `0`, **and** lets the whole table go back to `int64`: with no `NaN` left, pandas no longer needs `float64` to hold a missing value.
 
 ## Under the hood
 
@@ -142,6 +207,8 @@ sales.groupby(["region", "product"])["revenue"].sum().unstack()
 
 They give identical results. `pivot_table()` is the concise version with extras baked in (`margins`, `fill_value`); the GroupBy form is more flexible inside a longer chain. Seeing they are the same thing makes both less mysterious.
 
+**Why a single hole turns the whole column to `float64`.** A pandas integer column has no slot for a missing value, but a float column does (`NaN` is a float). So the moment one empty cell needs a `NaN`, pandas has to widen the column from `int64` to `float64` to store it, and that is why a grid with a gap comes back with `.0` on every number. `fill_value=0` supplies a real integer for the gap instead, so no `NaN` is ever needed and the column stays `int64`. The clean look is a side effect; keeping the dtype is the substance. This is the same `NaN`-forces-float rule you met in [missing values](../cleaning/missing-values.md).
+
 ## Gotchas
 
 !!! warning "The default aggfunc is mean, not sum"
@@ -153,6 +220,9 @@ They give identical results. `pivot_table()` is the concise version with extras 
 !!! warning "fill_value can mislead for averages"
     Filling empty cells with 0 is right for sums, but in an average table it makes "no data" look like "an average of zero". Match the fill to the aggregation.
 
+!!! warning "Margins are recomputed, not summed from the cells"
+    The `All` row and column run your `aggfunc` over the **raw rows**, not over the visible cells. For `sum` that is the same number either way, but for `mean` it is not: the `All` mean is the mean of every underlying value, not the average of the cell averages. Do not try to reproduce a margin by hand from the grid.
+
 ## Quick reference
 
 | You want | Write |
@@ -160,7 +230,8 @@ They give identical results. `pivot_table()` is the concise version with extras 
 | Reshape, one value per cell | `df.pivot(index="r", columns="c", values="v")` |
 | Reshape and combine collisions | `df.pivot_table(index="r", columns="c", values="v", aggfunc="sum")` |
 | Add grand totals | `..., margins=True` |
-| Fill empty cells | `..., fill_value=0` |
+| Rename the totals label | `..., margins=True, margins_name="Total"` |
+| Fill empty cells (and keep `int64`) | `..., fill_value=0` |
 | The GroupBy equivalent | `df.groupby(["r", "c"])["v"].sum().unstack()` |
 
 ## Where this connects

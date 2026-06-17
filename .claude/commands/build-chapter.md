@@ -155,8 +155,9 @@ A reader must be able to stop at any depth and still have gained something.
    Decide per diagram. **Verify ASCII alignment, do not eyeball it:** every column, `|`, and
    `+` must line up across rows; count characters. Prefer **boxed tables** and a **top-to-
    bottom** layout (with a down-arrow between stages) over side-by-side tables, which almost
-   never align cleanly in monospace. Use plain ASCII (`->`, `|`, `+`, `-`), never box-drawing
-   or arrow glyphs that read like stray dashes.
+   never align cleanly in monospace. Prefer plain ASCII (`->`, `v`, `|`, `+`, `-`). A single
+   clean arrow such as `→` is acceptable when it keeps the table aligned; never use box-drawing
+   runs or multi-character arrow glyphs like `─────►` that read as stray dashes.
 4. **How it works.** Small examples building up. Use `=== "tabs"` to compare variants.
 5. **Under the hood.** The deepest internals and the real "why". Open it with a `!!! tip`
    that gives beginners **permission to skip** to the cheat sheet and come back.
