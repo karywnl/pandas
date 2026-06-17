@@ -71,7 +71,8 @@ extra_css:
   - stylesheets/extra.css
 
 extra_javascript:
-  - javascripts/a11y.js
+  - path: javascripts/a11y.js
+    defer: true
 
 nav:
   - Home: index.md
