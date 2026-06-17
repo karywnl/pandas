@@ -18,7 +18,7 @@ flowchart LR
     F["Foundations<br/>Series, DataFrames,<br/>reading files, dtypes"] --> SEL["Selecting data<br/>columns, loc/iloc,<br/>boolean"]
     SEL --> IDX["The index<br/>set and reset"]
     IDX --> CLEAN["Cleaning data<br/>missing, dupes,<br/>rename, replace, dtypes"]
-    CLEAN --> GRP["Grouping and reshaping<br/>groupby, aggregate, pivot"]
+    CLEAN --> GRP["Grouping and reshaping<br/>groupby, aggregate,<br/>pivot, crosstab"]
     SEL --> CLEAN
     style F fill:#5e35b1,color:#fff
     style SEL fill:#5e35b1,color:#fff
