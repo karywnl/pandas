@@ -17,6 +17,35 @@
   --md-primary-fg-color--dark: #4527a0;
 }
 
+/* ----------------------------------------------------------------------
+   Accessibility: distinguishable links and stronger contrast
+   ---------------------------------------------------------------------- */
+
+/* Underline links inside prose, so they are not told apart by colour alone. */
+.md-typeset p a,
+.md-typeset li a,
+.md-typeset .admonition a {
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+/* The home-page "cards" are clearly buttons, not prose, so leave them clean. */
+.md-typeset .grid.cards a {
+  text-decoration: none;
+}
+
+/* Dark mode: the violet primary is too dark for body links on a dark
+   background, so use a lighter violet that meets the contrast ratio. */
+[data-md-color-scheme="slate"] {
+  --md-typeset-a-color: #b39ddb;
+}
+
+/* Lift the faded footer text to a readable contrast on the dark footer. */
+:root {
+  --md-footer-fg-color--light: hsla(0, 0%, 100%, 0.85);
+  --md-footer-fg-color--lighter: hsla(0, 0%, 100%, 0.6);
+}
+
 /* Slightly roomier, friendlier body text for long study sessions. */
 .md-typeset {
   font-size: 0.78rem;
