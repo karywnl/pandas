@@ -151,8 +151,12 @@ A reader must be able to stop at any depth and still have gained something.
 1. **Intuition** box, the one line mental model. `!!! intuition "The gist"`.
 2. **Why it exists / the problem it solves.** Motivation before mechanics. Introduce the
    page's single analogy here.
-3. **Picture it.** A visual. ASCII for memory and grid layouts (align every column exactly,
-   labels directly over their data), Mermaid for graphs and flows. Decide per diagram.
+3. **Picture it.** A visual. ASCII for memory and grid layouts, Mermaid for graphs and flows.
+   Decide per diagram. **Verify ASCII alignment, do not eyeball it:** every column, `|`, and
+   `+` must line up across rows; count characters. Prefer **boxed tables** and a **top-to-
+   bottom** layout (with a down-arrow between stages) over side-by-side tables, which almost
+   never align cleanly in monospace. Use plain ASCII (`->`, `|`, `+`, `-`), never box-drawing
+   or arrow glyphs that read like stray dashes.
 4. **How it works.** Small examples building up. Use `=== "tabs"` to compare variants.
 5. **Under the hood.** The deepest internals and the real "why". Open it with a `!!! tip`
    that gives beginners **permission to skip** to the cheat sheet and come back.

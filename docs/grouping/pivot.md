@@ -20,12 +20,26 @@ readings = pd.DataFrame({
 To compare cities and days at a glance, you want a **grid**: cities down the side, days across the top, temperature in each cell. Reshaping the long list into that grid is what pivoting does.
 
 ```text
-  long form (one row per record)        grid form (pivoted)
-  city    day   temp                     day    Mon  Tue
-  Paris   Mon    12                       city
-  Paris   Tue    14          ─────►       Paris   12   14
-  Tokyo   Mon    18                       Tokyo   18   17
-  Tokyo   Tue    17
+long form: one row per reading
+  +-------+------+------+
+  | city  | day  | temp |
+  +-------+------+------+
+  | Paris | Mon  |  12  |
+  | Paris | Tue  |  14  |
+  | Tokyo | Mon  |  18  |
+  | Tokyo | Tue  |  17  |
+  +-------+------+------+
+
+        |  pivot:  index = city,  columns = day,  values = temp
+        v
+
+grid form: city down the side, day across the top
+  +-------+------+------+
+  |       | Mon  | Tue  |
+  +-------+------+------+
+  | Paris |  12  |  14  |
+  | Tokyo |  18  |  17  |
+  +-------+------+------+
 ```
 
 ## pivot(): just rearrange
