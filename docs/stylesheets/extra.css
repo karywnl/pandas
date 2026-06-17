@@ -8,6 +8,15 @@
   --md-code-font: "JetBrains Mono";
 }
 
+/* Match the header/navbar to the favicon violet (#5e35b1).
+   The palette is set to primary: indigo, so we override that scheme's
+   variables here (this stylesheet loads after the theme, so it wins). */
+[data-md-color-primary="indigo"] {
+  --md-primary-fg-color: #5e35b1;
+  --md-primary-fg-color--light: #7e57c2;
+  --md-primary-fg-color--dark: #4527a0;
+}
+
 /* Slightly roomier, friendlier body text for long study sessions. */
 .md-typeset {
   font-size: 0.78rem;
