@@ -1,6 +1,8 @@
 site_name: Pandas, Properly
 site_description: A beginner-first, visual, deeply connected guide to pandas.
 site_author: kary
+site_url: https://karywnl.github.io/pandas/
+copyright: Written for pandas 3.0 &middot; last reviewed June 2026
 
 theme:
   name: material
@@ -69,5 +71,27 @@ extra_css:
 
 nav:
   - Home: index.md
+  - Foundations:
+      - Series: foundations/series.md
+      - Building a DataFrame: foundations/dataframe.md
+      - Inspecting a DataFrame: foundations/attributes.md
+      - Data types: foundations/dtypes.md
+      - head and tail: foundations/head-tail.md
   - Selecting data:
+      - Selecting columns: selection/column-selection.md
+      - Selecting multiple columns: selection/multi-column.md
       - loc and iloc: selection/loc-iloc.md
+      - Boolean indexing: selection/boolean-indexing.md
+  - The index:
+      - Setting the index: indexing/set-index.md
+      - Resetting the index: indexing/reset-index.md
+  - Cleaning data:
+      - Missing values: cleaning/missing-values.md
+      - Dropping duplicates: cleaning/duplicates.md
+      - Renaming columns: cleaning/rename.md
+      - Replacing values: cleaning/replace.md
+      - Changing data types: cleaning/change-dtypes.md
+  - Grouping and reshaping:
+      - GroupBy: grouping/groupby.md
+      - Aggregation: grouping/aggregation.md
+      - Pivot tables: grouping/pivot.md
