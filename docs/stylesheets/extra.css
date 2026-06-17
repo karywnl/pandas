@@ -46,6 +46,26 @@
   --md-footer-fg-color--lighter: hsla(0, 0%, 100%, 0.6);
 }
 
+/* ----------------------------------------------------------------------
+   Layout stability (reduce CLS, the layout jump while loading)
+   ---------------------------------------------------------------------- */
+
+/* Reserve a fixed box for the header logo so it cannot shift on load. */
+.md-header__button.md-logo img,
+.md-header__button.md-logo svg {
+  height: 1.2rem;
+  width: 1.2rem;
+}
+
+/* Mermaid diagrams are drawn in the browser after load. Reserve space and
+   centre them so the page does not jump when each diagram appears. */
+.md-typeset .mermaid {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 140px;
+}
+
 /* Slightly roomier, friendlier body text for long study sessions. */
 .md-typeset {
   font-size: 0.78rem;
