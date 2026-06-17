@@ -1,0 +1,13 @@
+# MkDocs build output (regenerated, never commit)
+/site/
+
+# uv virtual environment
+/.venv/
+
+# Python caches
+__pycache__/
+*.py[cod]
+
+# OS noise
+.DS_Store
+Thumbs.db
