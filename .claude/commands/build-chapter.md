@@ -20,6 +20,12 @@ If that is non-empty, build that specific topic. If it is empty, **you decide wh
   them where they are thin, and **add whatever a learner actually needs** that the notes
   leave out: missing subtopics, a clearer ordering, extra connections, a correction where the
   notes are wrong. Rely on your own reasoning more than on the notes.
+- **Use production judgment, the course is not the ceiling or the floor.** You have real
+  production data-science experience; use it. If a topic is missing something that matters in
+  real-world pandas work, add it and explain it. If the notes include filler that does not
+  help a learner, leave it out. Weave in the practical things intro courses skip (method
+  chaining, copy/view discipline, vectorization over `apply`, sane dtypes on read, avoiding
+  `inplace`) where they fit, kept concise and verified like everything else.
 - **Think about what the learner needs right now**, not about transcribing. Every run, reason
   about the best next thing to build and the best way to teach it, then do that.
 - **Be autonomous but show your thinking.** At the start of a run, state what you chose to
