@@ -111,7 +111,7 @@ A Series stores all its values in a single typed block of memory, so the type ha
 
 !!! connect "The Series sits underneath everything"
     - A [**DataFrame**](dataframe.md) is just several Series sharing one index. Every column you pull out with `df["col"]` is a Series.
-    - **Index alignment** shown here is the engine behind arithmetic between columns and the reason [the index](../indexing/set-index.md) matters so much. *(chapter coming soon)*
+    - **Index alignment** shown here is the engine behind arithmetic between columns and the reason [the index](../indexing/set-index.md) matters so much.
     - The single-dtype rule leads straight into [data types](dtypes.md) and why missing values can change a column's type.
 
 !!! intuition "If you remember one thing"

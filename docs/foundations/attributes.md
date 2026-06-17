@@ -123,8 +123,8 @@ By default it summarises only numeric columns. Note `count` for `age` is 3, not 
 ## Where this connects
 
 !!! connect "Inspection points at your next move"
-    - A `float64` where you expected `int64`, or `info` showing gaps, sends you to [handling missing values](../cleaning/missing-values.md). *(chapter coming soon)*
-    - Wrong types (numbers stored as text) send you to [changing data types](../cleaning/change-dtypes.md). *(chapter coming soon)*
+    - A `float64` where you expected `int64`, or `info` showing gaps, sends you to [handling missing values](../cleaning/missing-values.md).
+    - Wrong types (numbers stored as text) send you to [changing data types](../cleaning/change-dtypes.md).
     - `head` and `tail` have their own short [chapter](head-tail.md) on peeking at large data safely.
 
 !!! intuition "If you remember one thing"

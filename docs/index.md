@@ -29,7 +29,9 @@ flowchart LR
 
 Start at **Foundations** to learn what a Series and a DataFrame even are, move through **Selecting** and **Cleaning**, and finish with **Grouping**, where you answer real "per category" questions. Each chapter ends by linking to the ones it leans on, so you can follow the threads in any direction.
 
-## Pick a starting point
+## Where to begin
+
+**New to pandas? Start with Foundations and read top to bottom.** Each chapter builds on the one before it. Already comfortable with the basics? Jump straight to whichever section you need.
 
 <div class="grid cards" markdown>
 

@@ -97,7 +97,7 @@ The `set_index` then `reset_index` round trip is lossless: the column comes back
 
 !!! connect "The cleanup step"
     - It is the exact inverse of [setting the index](set-index.md), and the two round-trip cleanly.
-    - You reach for it constantly after [GroupBy](../grouping/groupby.md), which parks the keys in the index. *(chapter coming soon)*
+    - You reach for it constantly after [GroupBy](../grouping/groupby.md), which parks the keys in the index.
     - With `drop=True` it fixes the index gaps left by [boolean filtering](../selection/boolean-indexing.md), the same gaps that cause the integer-label trap in [loc and iloc](../selection/loc-iloc.md).
 
 !!! intuition "If you remember one thing"

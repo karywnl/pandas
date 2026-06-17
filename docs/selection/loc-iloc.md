@@ -323,9 +323,9 @@ One more reason `loc` is not just convenient but genuinely efficient. When you s
 
 !!! connect "loc and iloc plug into the rest of pandas like this"
     - [**Boolean indexing**](boolean-indexing.md) is just `loc` being fed a column of True and False. When you write `df[df["rating"] > 8]`, you are using a mask, and doing it through `df.loc[mask, cols]` is how you filter rows and pick columns in the same move.
-    - **Setting the index** (`set_index`) is what gives `loc` meaningful names to look up, and turns on that fast O(1) hash lookup described above. *(chapter coming soon)*
-    - **Resetting the index** (`reset_index`) is the cleanup you run after filtering, precisely to fix the "labels no longer match positions" trap from this page. *(chapter coming soon)*
-    - **The SettingWithCopyWarning** you will meet again in **handling missing values** and **replacing values**, because filling and replacing are assignments, and the same one `loc` call rule keeps them safe. *(chapter coming soon)*
+    - [**Setting the index**](../indexing/set-index.md) (`set_index`) is what gives `loc` meaningful names to look up, and turns on that fast O(1) hash lookup described above.
+    - [**Resetting the index**](../indexing/reset-index.md) (`reset_index`) is the cleanup you run after filtering, precisely to fix the "labels no longer match positions" trap from this page.
+    - **The SettingWithCopyWarning** you will meet again in [handling missing values](../cleaning/missing-values.md) and [replacing values](../cleaning/replace.md), because filling and replacing are assignments, and the same one `loc` call rule keeps them safe.
 
 !!! intuition "If you remember one thing"
     Name or seat number. `loc` reads the name on the seat. `iloc` counts to the seat. Decide which one you mean *before* you type the bracket, and most pandas selection bugs never happen to you.

@@ -96,7 +96,7 @@ After dropping, the index keeps its old numbers and gets gaps, so chain `.reset_
 
 !!! connect "A core cleaning step"
     - The leftover index gaps are fixed by [resetting the index](../indexing/reset-index.md).
-    - "One row per key" is closely related to [GroupBy](../grouping/groupby.md), which instead *combines* the rows that share a key. *(chapter coming soon)*
+    - "One row per key" is closely related to [GroupBy](../grouping/groupby.md), which instead *combines* the rows that share a key.
     - For look-alike but not identical text ("John" vs "john"), normalise first with the tools in [replacing values](replace.md).
 
 !!! intuition "If you remember one thing"

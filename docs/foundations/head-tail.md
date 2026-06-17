@@ -93,7 +93,7 @@ They are also effectively free. They do not copy the data; they hand you a light
 !!! connect "A small but constant tool"
     - `head` and `tail` are thin wrappers over [`iloc`](../selection/loc-iloc.md) slicing.
     - They are step four of the [inspection workflow](attributes.md).
-    - Their index-keeping behaviour is the same one that makes [resetting the index](../indexing/reset-index.md) useful after slicing. *(chapter coming soon)*
+    - Their index-keeping behaviour is the same one that makes [resetting the index](../indexing/reset-index.md) useful after slicing.
 
 !!! intuition "If you remember one thing"
     `head` and `tail` are your peek at data too big to print. First n, last n, default 5, and they keep the original row labels.

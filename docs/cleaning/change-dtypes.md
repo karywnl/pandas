@@ -94,7 +94,7 @@ df = df.astype({"qty": "int64", "price": "float64"})
 !!! connect "Fixing what inspection revealed"
     - This chapter is the cure for the wrong types you spot in [data types](../foundations/dtypes.md) and the [inspection workflow](../foundations/attributes.md).
     - Cleaning the strings first uses [replace](replace.md) and the `.str` accessor.
-    - A `datetime64` column powers the time slicing and grouping in [setting the index](../indexing/set-index.md) and [GroupBy](../grouping/groupby.md). *(chapter coming soon)*
+    - A `datetime64` column powers the time slicing and grouping in [setting the index](../indexing/set-index.md) and [GroupBy](../grouping/groupby.md).
 
 !!! intuition "If you remember one thing"
     Clean the text, then convert. `astype` when the data is tidy, `to_numeric` and `to_datetime` with `errors="coerce"` when it might be dirty, so bad values become `NaN` instead of crashing your pipeline.

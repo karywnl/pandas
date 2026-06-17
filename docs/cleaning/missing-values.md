@@ -113,7 +113,7 @@ The difference, shown on the gap between 9am's 20 and 12pm's 24:
 !!! connect "Missing data touches everything"
     - The `float64` upcast comes straight from [data types](../foundations/dtypes.md).
     - Filtering [silently drops `NaN`](../selection/boolean-indexing.md) because of the same `NaN != NaN` rule.
-    - Group-aware filling (fill each group with its own median) uses `transform`, covered in [aggregation](../grouping/aggregation.md). *(chapter coming soon)*
+    - Group-aware filling (fill each group with its own median) uses `transform`, covered in [aggregation](../grouping/aggregation.md).
 
 !!! intuition "If you remember one thing"
     Three moves: find with `isna`, drop with `dropna`, fill with `fillna` or `interpolate`. Use `interpolate` for ordered data, and always look at the pattern of holes before patching them.

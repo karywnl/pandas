@@ -108,7 +108,7 @@ Selecting columns does not copy the underlying data, it references the existing 
 !!! connect "Carving the table down"
     - One column at a time, plus dtype and pattern selection, is the previous chapter, [selecting columns](column-selection.md).
     - Combine with row [filtering](boolean-indexing.md): `df.loc[mask, ["a", "b"]]` picks rows and columns together.
-    - `reindex` here previews the alignment idea that drives [the index](../indexing/set-index.md) chapters. *(chapter coming soon)*
+    - `reindex` here previews the alignment idea that drives [the index](../indexing/set-index.md) chapters.
 
 !!! intuition "If you remember one thing"
     A list of names in brackets selects and reorders columns at once. Reach for `drop` when removing is simpler than listing, and `reindex` when every table must share one column set.

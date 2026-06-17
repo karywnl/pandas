@@ -277,9 +277,9 @@ movies[(movies["rating"] > 8.6) | (movies["rating"].isna())]
 
 !!! connect "Boolean indexing reaches into the rest of pandas like this"
     - **loc and iloc**: a mask is exactly what `loc` wants for its row selector. `df[mask]` filters rows; `df.loc[mask, cols]` filters rows and picks columns in one move. Boolean indexing is really [loc](loc-iloc.md) fed `True`/`False`.
-    - **Handling missing values**: the silent-`NaN`-drop here is the same `NaN` behaviour you will manage with `isna`, `fillna`, and `dropna`. Filtering and missing data are two sides of one coin. *(chapter coming soon)*
+    - [**Handling missing values**](../cleaning/missing-values.md): the silent-`NaN`-drop here is the same `NaN` behaviour you will manage with `isna`, `fillna`, and `dropna`. Filtering and missing data are two sides of one coin.
     - **The chained-assignment rule** from [loc and iloc](loc-iloc.md#views-copies-and-the-famous-warning) shows up the instant you try to *change* the rows a mask selects. Always assign through one `loc`.
-    - **GroupBy** later uses this exact idea to keep or drop whole groups with `filter`. *(chapter coming soon)*
+    - [**GroupBy**](../grouping/groupby.md) later uses this exact idea to keep or drop whole groups with `filter`.
 
 !!! intuition "If you remember one thing"
     Write the rule, let pandas be the bouncer. A condition becomes a column of `True`/`False`, and `df[mask]` keeps the yeses. Combine rules with `&`, `|`, `~` (each in its own parentheses), and remember that missing values always get turned away at the door.

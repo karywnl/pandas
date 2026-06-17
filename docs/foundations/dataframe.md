@@ -133,7 +133,7 @@ Pandas infers each column's type from its values: all integers give `int64`, any
 !!! connect "From here the whole workflow opens up"
     - Each column is a [**Series**](series.md), and they all share one row index.
     - Once built, you [**inspect**](attributes.md) it with `shape`, `dtypes`, and `info`, then [**select**](../selection/loc-iloc.md) the parts you want.
-    - The `set_index` shortcut shown here gets its own chapter on [setting the index](../indexing/set-index.md). *(chapter coming soon)*
+    - The `set_index` shortcut shown here gets its own chapter on [setting the index](../indexing/set-index.md).
 
 !!! intuition "If you remember one thing"
     Hand pandas a dictionary of columns. Keys become headers, lists become columns, and they must all be the same length.

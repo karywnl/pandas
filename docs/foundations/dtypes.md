@@ -93,7 +93,7 @@ This is why downcasting wide numeric tables and converting low-variety text to `
 ## Gotchas
 
 !!! warning "Numbers stored as text compare wrong"
-    If a numeric column was loaded as text, `df["age"] > 30` compares strings letter by letter, where `"9" > "30"` is `True`. Always check `dtypes` after loading, and convert with the tools in [changing data types](../cleaning/change-dtypes.md). *(chapter coming soon)*
+    If a numeric column was loaded as text, `df["age"] > 30` compares strings letter by letter, where `"9" > "30"` is `True`. Always check `dtypes` after loading, and convert with the tools in [changing data types](../cleaning/change-dtypes.md).
 
 !!! warning "object can hide a mess"
     A column showing `object` may contain ints, strings, and `None` all at once. Inspect it with `df["col"].map(type).value_counts()` before trusting it.
@@ -111,8 +111,8 @@ This is why downcasting wide numeric tables and converting low-variety text to `
 ## Where this connects
 
 !!! connect "Types thread through the whole pipeline"
-    - Wrong types are fixed in [changing data types](../cleaning/change-dtypes.md), with `astype`, `to_numeric`, and `to_datetime`. *(chapter coming soon)*
-    - The missing-value upcast is the bridge to [handling missing values](../cleaning/missing-values.md). *(chapter coming soon)*
+    - Wrong types are fixed in [changing data types](../cleaning/change-dtypes.md), with `astype`, `to_numeric`, and `to_datetime`.
+    - The missing-value upcast is the bridge to [handling missing values](../cleaning/missing-values.md).
     - `dtypes` is step three of the [inspection workflow](attributes.md), and often the first hint that something is off.
 
 !!! intuition "If you remember one thing"
