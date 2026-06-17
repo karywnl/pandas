@@ -168,11 +168,13 @@ A reader must be able to stop at any depth and still have gained something.
 ## Learning-design rules (these turn reading into learning)
 
 - **One strong analogy per concept**, introduced at the top and called back at the very end.
-- **Skimmable takeaways:** after each major subsection, a bolded one liner
-  (`**In one line:** ...`) so a skimmer still leaves with the point.
-- **Active recall:** 2 to 3 collapsible predict-the-output prompts per page
-  (`??? question "Quick check: ..."`), each right after the idea it tests, answer inside and
-  verified. Reading is input; these force output. Highest leverage feature.
+- **Skimmable takeaways:** at least one bolded one liner (`**In one line:** ...`), and more
+  after major subsections where a skimmer would otherwise miss the point. Do not force one
+  after every heading if it would just be filler.
+- **Active recall:** at least one collapsible predict-the-output prompt per page
+  (`??? question "Quick check: ..."`), placed right after the idea it tests, answer inside and
+  verified. Add a second or third on richer topics where there is genuinely more to test, but
+  do not pad a short page to hit a number. Reading is input; these force output.
 - A diagram travels with the explanation that needs it. Never make the reader scroll back up
   to see referenced data. Re-show a compact version inline.
 
