@@ -72,7 +72,7 @@ The `All` row and column give the per-row, per-column, and grand totals, the sam
 Raw counts are hard to compare when groups differ in size. There were more mobile respondents than desktop, so the bare counts do not tell you whether mobile users *prefer* free at a higher rate. `normalize` turns the counts into fractions so you can compare:
 
 ```python
-pd.crosstab(survey["device"], survey["plan"], normalize="index")
+pd.crosstab(survey["device"], survey["plan"], normalize="index").round(2)
 # plan      free  paid
 # device
 # desktop   0.33  0.67     <- this ROW sums to 1
