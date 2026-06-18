@@ -1,22 +1,18 @@
 # loc and iloc
 
 !!! intuition "The gist"
-    A DataFrame has two ways to find a cell: by its **name** (the label) or by its **seat number** (the position). `loc` works by name. `iloc` works by position. The `i` in `iloc` stands for *integer position*, and that single letter is the whole difference.
+    A DataFrame has two ways to find a cell: by its **label** (the name in the index or the column header) or by its **position** (its integer number, counted from zero). `loc` works by label. `iloc` works by position. The `i` in `iloc` stands for *integer position*, and that single letter is the whole difference.
 
 ## Why these two things even exist
 
-Imagine you walk into a movie theatre. There are two completely different ways someone can tell you where to sit.
+A pandas DataFrame lets you point at a cell in two completely different ways, and mixing them up is a common source of bugs.
 
-They can say "sit in the seat reserved for **Alice**", which is a *label*. Or they can say "sit in **row 3, seat 5**", which is a *position*. Both get you to a seat. But they are different systems, and if you mix them up you end up in the wrong chair.
+- The **index** and the **column names** are **labels**: the names you can see, such as `"Parasite"` or `"rating"`.
+- The **position** is the integer number of each row and column, counted from zero, no matter what the labels say.
 
-A pandas DataFrame has the exact same two systems running at once:
+`loc` finds data by label. `iloc` finds data by position. Plain bracket access like `df['rating']` is convenient but limited: it can only grab whole columns by name or filter rows. The moment you want to say "these specific rows *and* these specific columns at the same time", you reach for `loc` or `iloc`.
 
-- The **index** and the **column names** are labels. They are the names written on the seats.
-- The **integer position** of each row and column is the seat number, counted from zero, no matter what the labels say.
-
-`loc` is the "find the seat named X" tool. `iloc` is the "find row number X, column number Y" tool. Plain bracket access like `df['rating']` is convenient but limited, it can only grab whole columns by name or filter rows. The moment you want to say "these specific rows *and* these specific columns at the same time", you reach for `loc` or `iloc`.
-
-Let us get a real DataFrame on the table so every example is concrete.
+Here is a real DataFrame so every example is concrete.
 
 ```python
 import pandas as pd
@@ -73,11 +69,11 @@ movies.iloc[[0, 3, 4]]    # rows at positions 0, 3 and 4
 movies.iloc[-1]           # last row -> Inception
 ```
 
-Notice `movies.iloc[0:3]` gives you positions 0, 1, and 2, but stops *before* 3. That is the normal Python slicing rule you already know from lists: the right end is excluded. Hold that thought, because `loc` is about to break it on purpose.
+Notice `movies.iloc[0:3]` gives you positions 0, 1, and 2, but stops *before* 3. That is the normal Python slicing rule you already know from lists: the right end is excluded. Remember this, because `loc` is about to break it on purpose.
 
-**In one line:** `iloc` counts seats from zero and, just like a Python list, excludes the right end of a slice.
+**In one line:** `iloc` counts positions from zero and, just like a Python list, excludes the right end of a slice.
 
-### loc: pointing by name
+### loc: pointing by label
 
 `loc` ignores positions and uses the labels you can actually see.
 
@@ -90,13 +86,13 @@ movies.loc[["The Matrix", "Inception"]]      # two named rows
 movies.loc[movies["rating"] > 8.7]           # every row where rating beats 8.7
 ```
 
-That last line is the one you will use constantly. `loc` happily accepts a column of True and False values and keeps only the True rows. That friendship has its own chapter: [boolean indexing](boolean-indexing.md).
+That last line is the one you will use constantly. `loc` happily accepts a column of True and False values and keeps only the True rows. That has its own chapter: [boolean indexing](boolean-indexing.md).
 
 **In one line:** `loc` finds rows and columns by their labels, and it is the tool you will reach for most when filtering.
 
 ### Selecting rows and columns together
 
-This is the superpower that plain `df[...]` cannot do cleanly. You describe the rows and the columns in one breath.
+This is the superpower that plain `df[...]` cannot do cleanly. You describe the rows and the columns in one step.
 
 === "With loc (by name)"
 
@@ -220,10 +216,10 @@ top = films[films["rating"] > 8.6]
         index   year   rating    new position
           0     1999    8.7           0
           1     2008    9.0           1
-          4     2010    8.8           2     <- label is still 4, but now sits in seat 2
+          4     2010    8.8           2     <- label is still 4, but now at position 2
 ```
 
-Look at that last row. Filtering threw away the rows that failed (Interstellar and Parasite), but it **kept the original labels** on the survivors. So the labels are now `[0, 1, 4]`, while the positions quietly renumbered themselves to `[0, 1, 2]`. The label and the seat number have come apart.
+Look at that last row. Filtering threw away the rows that failed (Interstellar and Parasite), but it **kept the original labels** on the survivors. So the labels are now `[0, 1, 4]`, while the positions quietly renumbered themselves to `[0, 1, 2]`. The label and the position have come apart.
 
 Now the two accessors disagree on the very same number `4`:
 
@@ -232,10 +228,10 @@ top.loc[4]    # label 4 still exists      -> the Inception row
 top.iloc[4]   # position 4? only 3 rows now -> IndexError
 ```
 
-`loc[4]` happily finds the row labelled 4. `iloc[4]` asks for the fifth seat, which no longer exists, so it raises an error. This is the single most common source of "but it worked a minute ago" confusion in pandas, and it is exactly why the two tools stay separate.
+`loc[4]` happily finds the row labelled 4. `iloc[4]` asks for the row at position 4, which no longer exists, so it raises an error. This is the single most common source of "but it worked a minute ago" confusion in pandas, and it is exactly why the two tools stay separate.
 
 !!! tip "The habit that saves you"
-    Pick `loc` when you are thinking in names and `iloc` when you are thinking in seat numbers, and never let the choice be an accident. If you just filtered and now want "the first surviving row", that is a *position* idea, so use `iloc[0]`, not `loc[0]`.
+    Pick `loc` when you are thinking in labels and `iloc` when you are thinking in positions, and never let the choice be an accident. If you just filtered and now want "the first surviving row", that is a *position* idea, so use `iloc[0]`, not `loc[0]`.
 
 ??? question "Quick check: spring the trap"
     After `top = films[films['rating'] > 8.6]`, the survivors are labelled `[0, 1, 4]` (positions `[0, 1, 2]`). What does `top.iloc[2]` return, and what does `top.loc[2]` return?
@@ -289,7 +285,7 @@ Because it is a single `loc` on the original `movies`, there is no in between ob
 !!! info "What pandas 3.0 changes here (Copy on Write)"
     This site is written for pandas 3.0, and 3.0 quietly cleans up most of this mess with a behaviour called Copy on Write, which is now always on and can no longer be switched off. The idea: every slice behaves as if it owns a private copy, and pandas only physically copies the memory at the last possible moment, the instant you actually write to it. So the old view versus copy guessing game is essentially over. The chained assignment above behaves more helpfully now too. Instead of the vague old `SettingWithCopyWarning`, pandas raises a clearer `ChainedAssignmentError` warning and simply leaves your real data unchanged, so you find out immediately instead of silently getting nothing. The takeaway has not moved: assign with one `loc` call. If you are still on an older pandas 2.x, you can switch this safer behaviour on early with `pd.set_option("mode.copy_on_write", True)`. Learning the one `loc` habit now keeps your code correct on every version.
 
-### at and iat: the express lane for one cell
+### at and iat: the fast way to one cell
 
 When you want exactly one value, `loc` and `iloc` work, but they do extra setup to be able to return Series or DataFrames. If you know you want a single scalar, `at` and `iat` skip that overhead and are noticeably faster in a tight loop.
 
@@ -298,7 +294,7 @@ movies.at["Parasite", "rating"]   # label based, one cell  -> 8.4
 movies.iat[3, 1]                   # position based, one cell -> 8.4
 ```
 
-Same idea as `loc` and `iloc` (name vs position), just specialised for a single cell.
+Same idea as `loc` and `iloc` (label vs position), just specialised for a single cell.
 
 ### Why a labelled index is fast
 
@@ -309,7 +305,7 @@ One more reason `loc` is not just convenient but genuinely efficient. When you s
 | You want | Use | Note |
 | --- | --- | --- |
 | First row by position | `df.iloc[0]` | zero based |
-| A row by its name | `df.loc["name"]` | |
+| A row by its label | `df.loc["name"]` | |
 | Rows 0 to 2 (not 3) | `df.iloc[0:3]` | right end excluded |
 | Labels "a" through "c" | `df.loc["a":"c"]` | both ends included |
 | Filter rows by a condition | `df.loc[mask]` | `mask` is True/False |
@@ -328,4 +324,4 @@ One more reason `loc` is not just convenient but genuinely efficient. When you s
     - **The SettingWithCopyWarning** you will meet again in [handling missing values](../cleaning/missing-values.md) and [replacing values](../cleaning/replace.md), because filling and replacing are assignments, and the same one `loc` call rule keeps them safe.
 
 !!! intuition "If you remember one thing"
-    Name or seat number. `loc` reads the name on the seat. `iloc` counts to the seat. Decide which one you mean *before* you type the bracket, and most pandas selection bugs never happen to you.
+    Label or position. `loc` finds data by its label. `iloc` finds it by its position number. Decide which one you mean *before* you type the bracket, and most pandas selection bugs never happen to you.

@@ -23,6 +23,12 @@ point of the site, and the most common way a page goes wrong is forgetting it **
 
 ## Beginner-first
 
+- **Write in simple English. Most readers are not native English speakers.** Use short, common
+  words and short sentences. Avoid idioms and figures of speech ("glossed over", "the dance",
+  "reads straight off", "round trip", "crawl"). Say the plain thing instead. If a sentence
+  would be hard for someone reading English as a second language, rewrite it.
+- **Use an analogy only if it makes things clearer.** A forced or unfamiliar analogy adds
+  confusion. When in doubt, explain the real thing directly in plain words instead.
 - **Show the data before you transform it.** Print the starting DataFrame as a table once, so
   the reader sees the raw records turn into the result. Never make them trust prose about what
   the data looks like.

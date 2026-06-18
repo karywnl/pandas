@@ -7,7 +7,7 @@
 
 So far every example built a DataFrame from a Python dictionary. That is fine for learning, but real data does not arrive as a dictionary. It arrives as a **file**: a CSV exported from a spreadsheet, a database, or an API. `read_csv` is the front door to almost every real pandas session.
 
-Think of a CSV as a flat cardboard box of text: rows of values separated by commas, with no idea what anything *means*. `read_csv` is the unpacker. It reads that text, works out a type for each column, and hands you a proper typed, labelled table.
+A CSV file is just plain text: rows of values separated by commas, with no information about what each value *means*. `read_csv` reads that text, works out a data type for each column, and gives you back a proper typed, labelled table.
 
 ## Picture it
 
@@ -166,4 +166,4 @@ Parquet is worth knowing: it stores dtypes inside the file, so you skip the gues
     - Right after loading, run the [inspection](attributes.md) workflow to confirm the read did what you expected.
 
 !!! intuition "If you remember one thing"
-    `read_csv` is the unpacker: it turns a flat text file into a typed table, guessing a type for each column. The guesses are often wrong for identifiers and dates, so pass `dtype` and `parse_dates` to fix them, and write back with `index=False`.
+    `read_csv` turns a flat text file into a typed table, guessing a type for each column. The guesses are often wrong for identifiers and dates, so pass `dtype` and `parse_dates` to fix them, and write back with `index=False`.

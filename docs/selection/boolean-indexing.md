@@ -7,9 +7,9 @@
 
 Suppose you have a table of films and you want only the great ones, say rating above 8.6. In plain Python you would write a loop: go row by row, check the rating, collect the ones that pass. That is slow to write, slow to run, and easy to get wrong.
 
-Pandas flips this around with one idea. Picture a **bouncer at a movie premiere** holding a single rule on a card: "rating above 8.6". The bouncer looks at each film and gives a verdict, yes or no. That row of verdicts is the **mask**. Then the velvet rope, `df[mask]`, lets through only the films the bouncer said yes to. You describe the rule once; pandas plays bouncer for every row at C speed.
+Pandas does this with one idea. You write the condition once, for example `rating > 8.6`. Pandas checks it against every row and builds a column of `True` and `False` values, one per row. This column is called the **mask**. Then `df[mask]` keeps only the rows where the mask is `True`. You write the rule once, and pandas applies it to every row at C speed.
 
-Let us put a real table on the table.
+Here is a real table to work with.
 
 ```python
 import pandas as pd
@@ -25,7 +25,7 @@ movies = pd.DataFrame({
 
 ## Picture it
 
-Here is the bouncer applying the rule `rating > 8.6` to every row. The right hand column is the **mask**, and it decides who stays.
+Here pandas applies the rule `rating > 8.6` to every row. The right hand column is the **mask**, and it decides which rows stay.
 
 ```text
  +-----------------+------+--------+----------+
@@ -40,7 +40,7 @@ Here is the bouncer applying the rule `rating > 8.6` to every row. The right han
  +-----------------+------+--------+----------+
 ```
 
-Notice Tenet already. A missing rating produces `False`, so the bouncer quietly turns it away. Hold that thought, it is the single most surprising part of this whole topic, and we come back to it.
+Notice Tenet already. A missing rating produces `False`, so that row is left out. Remember this, it is the single most surprising part of this whole topic, and we come back to it.
 
 **In one line:** a condition becomes a column of `True`/`False`, and `df[mask]` keeps the `True` rows.
 
@@ -72,7 +72,7 @@ Most of the time you skip the variable and write it in one breath: `movies[movie
 
 ### The comparison operators
 
-Every standard comparison builds a mask. These are the bouncer's possible rules.
+Every standard comparison builds a mask. These are the rules you can use.
 
 | Operator | Means | Example |
 | --- | --- | --- |
@@ -282,4 +282,4 @@ movies[(movies["rating"] > 8.6) | (movies["rating"].isna())]
     - [**GroupBy**](../grouping/groupby.md) later uses this exact idea to keep or drop whole groups with `filter`.
 
 !!! intuition "If you remember one thing"
-    Write the rule, let pandas be the bouncer. A condition becomes a column of `True`/`False`, and `df[mask]` keeps the yeses. Combine rules with `&`, `|`, `~` (each in its own parentheses), and remember that missing values always get turned away at the door.
+    Write the rule, and pandas applies it to every row. A condition becomes a column of `True`/`False`, and `df[mask]` keeps the `True` rows. Combine rules with `&`, `|`, `~` (each in its own parentheses), and remember that missing values are always left out.

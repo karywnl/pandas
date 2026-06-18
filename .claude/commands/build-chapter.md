@@ -151,7 +151,9 @@ A reader must be able to stop at any depth and still have gained something.
 
 ## Learning-design rules (these turn reading into learning)
 
-- **One strong analogy per concept**, introduced at the top and called back at the very end.
+- **Prefer plain terms over analogies.** Explain the real thing directly, in simple words.
+  Use an analogy only when it genuinely makes the idea clearer, and never force one: a
+  confusing or unfamiliar analogy is worse than none. See the simple-language rules in `CLAUDE.md`.
 - **Skimmable takeaways:** at least one bolded one liner (`**In one line:** ...`), and more
   after major subsections where a skimmer would otherwise miss the point. Do not force one
   after every heading if it would just be filler.
