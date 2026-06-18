@@ -18,6 +18,22 @@ survey = pd.DataFrame({
 })
 ```
 
+Each of the seven rows is one respondent:
+
+```python
+survey
+#     device  plan
+# 0   mobile  free
+# 1  desktop  paid
+# 2   mobile  paid
+# 3   mobile  free
+# 4  desktop  paid
+# 5  desktop  free
+# 6   mobile  paid
+```
+
+If you have met [GroupBy](groupby.md), you can already half-build this: group by both columns and count. The catch is that groupby hands the answer back as a long stacked list, and you still have to fold it into a grid yourself. `crosstab` is the shortcut made for exactly this one job. It hands you the grid directly, and bakes in the proportions and totals you would otherwise work out by hand. That is why it exists even though `groupby` could get you there the long way.
+
 ## Picture it
 
 ```text
@@ -56,6 +72,8 @@ Note you pass the **Series themselves** (`survey["device"]`), not their names as
 
 ### Totals with margins
 
+Often the per-cell counts are not the whole question. You also want the bottom lines: how many paid users in total across every device, and how many respondents there are overall. `margins=True` adds those totals along the edges of the grid, so you do not have to sum the cells yourself.
+
 ```python
 pd.crosstab(survey["device"], survey["plan"], margins=True)
 # plan     free  paid  All
@@ -91,7 +109,7 @@ A quick way to keep it straight: normalize names the thing held *fixed*. `"index
 
 ### Summarising a number instead of counting
 
-Give `crosstab` a `values` column and an `aggfunc`, and it stops counting and aggregates that column instead, exactly like a pivot table:
+So far every cell answers **how many**. Sometimes the more useful question is **how much**: not how many mobile-and-free users there are, but what they spend on average. Give `crosstab` a `values` column and an `aggfunc`, and it stops counting and summarises that column instead, exactly like a pivot table:
 
 ```python
 survey["spend"] = [5, 20, 15, 8, 25, 6, 18]
