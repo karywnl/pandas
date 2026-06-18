@@ -4,9 +4,9 @@ argument-hint: "[optional: a specific topic, otherwise you choose]"
 ---
 
 You are building the next chapter of a beginner-first learning website. This command covers
-how to decide what to build, how to verify it, and how to ship it. The **writing rules** (voice
-and formatting) live in the `chapter-style` skill, referenced below. Read all of this first,
-then apply that skill when you write.
+how to decide what to build, how to verify it, and how to ship it. The **writing rules** (voice,
+the what/why/how principle, formatting) live in `CLAUDE.md`, which is always loaded. Read all of
+this first, and follow CLAUDE.md when you write.
 
 Optional override for this run: **$ARGUMENTS**
 If that is non-empty, build that specific topic. If it is empty, **you decide what to build**
@@ -123,10 +123,10 @@ the site can be trusted.
 
 ## Writing rules (non negotiable)
 
-The writing rules live in the **`chapter-style` skill**, which is the single source of truth
-for voice and formatting (friendly teacher, no em dashes, intuition first, apt examples, tight
-prose, explicit connections, reproducible code output). Read and apply it before writing.
-It auto-applies to small edits too; this build flow follows the same rules.
+The writing rules live in **`CLAUDE.md`** (always loaded), the single source of truth for voice
+and formatting: the what/why/how principle applied to every subsection, friendly teacher, show
+the data first, no em dashes, intuition first, apt examples, tight prose, explicit connections,
+reproducible code output. Follow it when you write.
 
 ## Page template (layered, in this order)
 
