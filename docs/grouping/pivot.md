@@ -237,7 +237,7 @@ They give identical results. `pivot_table()` is the concise version with extras 
 ## Where this connects
 
 !!! connect "Reshaping the summary"
-    - `pivot_table()` is [GroupBy](groupby.md) plus a reshape, and equals a group-then-`unstack`.
+    - `pivot_table()` is [GroupBy](groupby.md) plus a reshape, and equals a group-then-`unstack`. That group-then-`unstack` step, done by hand, is [multi-level GroupBy](multi-level-groupby.md).
     - The cell combining is ordinary [aggregation](aggregation.md), so any `aggfunc` (sum, mean, count, custom) works.
     - The result is a normal DataFrame, so you can keep [selecting](../selection/column-selection.md), [filtering](../selection/boolean-indexing.md), and sorting it.
     - For frequency tables (counting category combinations), [cross tabulation](crosstab.md) is the specialised, more convenient version.

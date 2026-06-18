@@ -107,6 +107,7 @@ By default, groups with a missing key are dropped. Pass `dropna=False` to keep a
 
 !!! connect "The heart of analysis"
     - More aggregation power (multiple functions, named outputs, custom logic) is the next chapter, [aggregation](aggregation.md).
+    - Grouping by several keys at once builds a layered, MultiIndex result, covered in [multi-level GroupBy](multi-level-groupby.md).
     - Reshaping a two-key group into a grid is [pivot tables](pivot.md).
     - The key lands in the index, so you often follow up with [resetting the index](../indexing/reset-index.md).
     - Grouping by a [datetime index](../indexing/set-index.md) is how time-based summaries work.

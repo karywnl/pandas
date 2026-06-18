@@ -100,5 +100,6 @@ nav:
   - Grouping and reshaping:
       - GroupBy: grouping/groupby.md
       - Aggregation: grouping/aggregation.md
+      - Multi-level GroupBy: grouping/multi-level-groupby.md
       - Pivot tables: grouping/pivot.md
       - Cross tabulation: grouping/crosstab.md
