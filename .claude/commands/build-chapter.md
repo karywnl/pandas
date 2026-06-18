@@ -3,9 +3,10 @@ description: Autonomously decide and build the next chapter of the learning site
 argument-hint: "[optional: a specific topic, otherwise you choose]"
 ---
 
-You are building the next chapter of a beginner-first learning website. This command is the
-**single source of truth** for everything: how to decide what to build, how to write it, how
-to verify it, and how to ship it. There is no other rules file. Read all of it first.
+You are building the next chapter of a beginner-first learning website. This command covers
+how to decide what to build, how to verify it, and how to ship it. The **writing rules** (voice
+and formatting) live in the `chapter-style` skill, referenced below. Read all of this first,
+then apply that skill when you write.
 
 Optional override for this run: **$ARGUMENTS**
 If that is non-empty, build that specific topic. If it is empty, **you decide what to build**
@@ -122,27 +123,10 @@ the site can be trusted.
 
 ## Writing rules (non negotiable)
 
-- **Voice: friendly teacher.** Warm, human, like a knowledgeable friend at a whiteboard.
-  Talk to the reader as "you". Never dry or reference-manual-like.
-- **No em dashes anywhere.** Use commas, periods, parentheses, or colons.
-- **Go all the way down.** Explain internals fully (memory layout, why the library made a
-  given choice). Never hand wave a "why".
-- **Intuition first.** Open with a one line mental model before any mechanics.
-- **Choose the apt example for the concept, do not default to one domain.** Pick the
-  everyday domain that makes *this* idea clearest, and vary it across chapters so the site
-  stays fresh. Sales or orders for grouping and pivots, temperatures or sensor readings for
-  interpolation and time, a survey or form for missing data, a messy CSV for renaming, a
-  product catalog for dtypes, student grades for filtering, and so on. One running example
-  per page, real and relatable, never abstract foo/bar. Reusing a domain is fine when it
-  genuinely fits, but reach for the one that best teaches the point in front of you.
-- **Respect the reader's stamina. Keep it tight.** Beginners tire of length. Be concise:
-  short paragraphs, the *minimum* examples that make each point land, no padding, no saying
-  the same thing twice. Cover everything that matters (do not drop content), but say it
-  economically. Aim for the shortest version that still teaches the what, the how, the why,
-  and the connections. Completeness without bloat.
-- **Make connections explicit.** Every page ends by linking the concept to the others it
-  touches. The connections are the whole point of this site. Never leave them untold.
-- Keep paragraphs short, bold the key terms. Beginners skim before they read.
+The writing rules live in the **`chapter-style` skill**, which is the single source of truth
+for voice and formatting (friendly teacher, no em dashes, intuition first, apt examples, tight
+prose, explicit connections, reproducible code output). Read and apply it before writing.
+It auto-applies to small edits too; this build flow follows the same rules.
 
 ## Page template (layered, in this order)
 
