@@ -5,7 +5,7 @@
 
 ## Why it exists
 
-The default index is just a row counter. It carries no meaning, so `df.loc[2]` only means "the third row". If you make a *meaningful* column the index, lookups become about the data itself: "give me order 103", "give me everything in January". The index stops being bookkeeping and starts being a tool.
+The default index is just a row counter. It carries no meaning, so `df.loc[2]` only means "the third row". If you make a *meaningful* column the index, lookups become about the data itself: "give me order 103", "give me everything in January". The index stops being just a row counter and starts being a tool.
 
 ```python
 import pandas as pd
@@ -45,7 +45,7 @@ The old `order_id` is gone from `orders.columns`; it became the label. If you wa
 
 ### A datetime index unlocks time slicing
 
-This is the killer feature. Set a date column as the index and you can slice by calendar text.
+This is the most useful feature. Set a date column as the index and you can slice by calendar text.
 
 ```python
 ts = (pd.DataFrame({

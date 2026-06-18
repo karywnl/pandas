@@ -60,7 +60,7 @@ readings.pivot(index="city", columns="day", values="temp")
 
 ## pivot_table(): rearrange and combine
 
-Here is the catch. What if two records want the **same cell**? Suppose Paris was measured twice on Monday, 12 and 16. Now the Paris/Monday cell has two values, and `pivot()` has no way to choose:
+Here is the problem. What if two records want the **same cell**? Suppose Paris was measured twice on Monday, 12 and 16. Now the Paris/Monday cell has two values, and `pivot()` has no way to choose:
 
 ```python
 readings_dup = pd.DataFrame({
@@ -104,7 +104,7 @@ sales.pivot_table(index="region", columns="product", values="revenue", aggfunc="
 # West      80  130
 ```
 
-`pivot()` would have raised an error on the duplicate East/A pair. `pivot_table()` just adds them up. That is why `pivot_table()` is the one you will reach for almost every time.
+`pivot()` would have raised an error on the duplicate East/A pair. `pivot_table()` just adds them up. That is why `pivot_table()` is the one you will use almost every time.
 
 ??? question "Quick check: which one?"
     You have sales with two "East / product A" rows, and you want a region-by-product grid of total revenue. Can you use `pivot()`? What does the East/A cell show?
@@ -152,7 +152,7 @@ sales.pivot_table(index="region", columns="product", values="revenue",
 # the "All" row and column are now labelled "Total"
 ```
 
-**In one line:** `margins=True` bolts a totals row and column onto the grid using your chosen `aggfunc`, with `All` as the default label.
+**In one line:** `margins=True` adds a totals row and column to the grid using your chosen `aggfunc`, with `All` as the default label.
 
 ### fill_value: holes in the grid
 
@@ -197,7 +197,7 @@ Notice the numbers also lost their `.0`. That is not cosmetic, and it is the rea
 !!! tip "New here? You have permission to skip this."
     `index`, `columns`, `values`, `aggfunc` is the whole mental model. One nice equivalence below.
 
-A pivot table is really a [GroupBy](groupby.md) on the two keys, followed by `unstack`, which swings one key up to become the columns:
+A pivot table is really a [GroupBy](groupby.md) on the two keys, followed by `unstack`, which moves one key up to become the columns:
 
 ```python
 sales.pivot_table(index="region", columns="product", values="revenue", aggfunc="sum")
@@ -205,7 +205,7 @@ sales.pivot_table(index="region", columns="product", values="revenue", aggfunc="
 sales.groupby(["region", "product"])["revenue"].sum().unstack()
 ```
 
-They give identical results. `pivot_table()` is the concise version with extras baked in (`margins`, `fill_value`); the GroupBy form is more flexible inside a longer chain. Seeing they are the same thing makes both less mysterious.
+They give identical results. `pivot_table()` is the concise version with extra options built in (`margins`, `fill_value`); the GroupBy form is more flexible inside a longer chain. Seeing they are the same thing makes both less mysterious.
 
 **Why a single hole turns the whole column to `float64`.** A pandas integer column has no slot for a missing value, but a float column does (`NaN` is a float). So the moment one empty cell needs a `NaN`, pandas has to widen the column from `int64` to `float64` to store it, and that is why a grid with a gap comes back with `.0` on every number. `fill_value=0` supplies a real integer for the gap instead, so no `NaN` is ever needed and the column stays `int64`. The clean look is a side effect; keeping the dtype is the substance. This is the same `NaN`-forces-float rule you met in [missing values](../cleaning/missing-values.md).
 
@@ -215,7 +215,7 @@ They give identical results. `pivot_table()` is the concise version with extras 
     If you leave out `aggfunc`, `pivot_table()` averages. When you actually want totals, say `aggfunc="sum"`, or you will get silently wrong numbers.
 
 !!! warning "pivot() breaks on duplicates by design"
-    A `ValueError` about duplicate entries is `pivot()` telling you a cell has more than one value. That is not a bug to fight; it is your signal to switch to `pivot_table()` and pick an `aggfunc`.
+    A `ValueError` about duplicate entries is `pivot()` telling you a cell has more than one value. That is not a bug to fix; it is your signal to switch to `pivot_table()` and pick an `aggfunc`.
 
 !!! warning "fill_value can mislead for averages"
     Filling empty cells with 0 is right for sums, but in an average table it makes "no data" look like "an average of zero". Match the fill to the aggregation.

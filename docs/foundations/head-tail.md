@@ -28,7 +28,7 @@ visitors.tail(3)     # last 3 rows
 
 **In one line:** `head` peeks at the start, `tail` peeks at the end, default 5 of each.
 
-### The negative trick
+### Negative numbers mean "all except"
 
 A minus sign flips the meaning into "all except".
 
@@ -37,7 +37,7 @@ visitors.head(-97)   # everything EXCEPT the last 97 rows  -> rows 0, 1, 2
 visitors.tail(-98)   # everything EXCEPT the first 98 rows  -> rows 98, 99
 ```
 
-This mirrors Python slicing: `head(-97)` is just `iloc[:-97]`. It is handy when the last few rows are footer junk, or the first few are stray header rows.
+This mirrors Python slicing: `head(-97)` is just `iloc[:-97]`. It is useful when the last few rows are footer lines, or the first few are stray header rows.
 
 ### Safe by design
 
@@ -46,7 +46,7 @@ visitors.head(1000)  # only 100 rows exist -> returns all 100, no error
 visitors.head(0)     # an empty frame with the right columns and dtypes
 ```
 
-Asking for more rows than exist is fine, you just get everything. And `head(0)` is a neat way to grab the *schema* (columns and types) with no data.
+Asking for more rows than exist is fine, you just get everything. And `head(0)` is a useful way to get the *schema* (columns and types) with no data.
 
 ??? question "Quick check: predict it"
     `visitors` has 100 rows (labels 0 to 99). What index labels does `visitors.tail(3)` have?

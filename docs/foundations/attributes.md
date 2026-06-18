@@ -18,7 +18,7 @@ customers = pd.DataFrame({
 })
 ```
 
-## The six-step once-over
+## The six-step check
 
 Run these in order on any new table. It catches most problems before you write a line of analysis.
 
@@ -26,7 +26,7 @@ Run these in order on any new table. It catches most problems before you write a
 customers.shape            # (4, 4)   how big?
 customers.columns          # what features exist?
 customers.dtypes           # are the types right?
-customers.head()           # do the first rows look sane?
+customers.head()           # do the first rows look reasonable?
 customers.info()           # any missing values?
 customers.describe()       # any weird numbers?
 ```
@@ -45,7 +45,7 @@ len(customers)     # 4       -> just the row count
 
 `shape` is an attribute, so there are no parentheses. Writing `customers.shape()` is an error.
 
-### Types, and the missing-value tell
+### Types, and the missing-value clue
 
 ```python
 customers.dtypes
@@ -55,7 +55,7 @@ customers.dtypes
 # spend    float64
 ```
 
-Look at `age`. You gave it whole numbers, yet it is `float64`, not `int64`. That is the fingerprint of a **missing value**: one `NaN` forces the whole integer column to float. So `dtypes` quietly told you data is missing before you even asked.
+Look at `age`. You gave it whole numbers, yet it is `float64`, not `int64`. That is the sign of a **missing value**: one `NaN` forces the whole integer column to float. So `dtypes` quietly told you data is missing before you even asked.
 
 ### info: structure plus completeness
 
@@ -70,7 +70,7 @@ customers.info()
 #  3   spend   4 non-null      float64
 ```
 
-The **Non-Null Count** is the gold here. `age` shows `3 non-null` out of 4 rows, so exactly one value is missing, and you knew it instantly.
+The **Non-Null Count** is the key information here. `age` shows `3 non-null` out of 4 rows, so exactly one value is missing, and you knew it instantly.
 
 ### describe: the numbers at a glance
 
@@ -87,7 +87,7 @@ customers.describe()
 
 By default it summarises only numeric columns. Note `count` for `age` is 3, not 4: `describe` skips the missing value too. Pass `include="all"` to summarise text columns as well.
 
-??? question "Quick check: read the tell"
+??? question "Quick check: read the clue"
     You load a table and `dtypes` shows an `age` column as `float64`, even though ages are whole numbers. What does that almost certainly mean?
 
     **Answer:** `age` has at least one **missing value**. A single `NaN` is a float, so it upcasts the whole integer column to `float64`. Confirm it with `info()`, where the non-null count will be less than the row count.

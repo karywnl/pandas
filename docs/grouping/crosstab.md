@@ -32,7 +32,7 @@ survey
 # 6   mobile  paid
 ```
 
-If you have met [GroupBy](groupby.md), you can already half-build this: group by both columns and count. The catch is that groupby hands the answer back as a long stacked list, and you still have to fold it into a grid yourself. `crosstab` is the shortcut made for exactly this one job. It hands you the grid directly, and bakes in the proportions and totals you would otherwise work out by hand. That is why it exists even though `groupby` could get you there the long way.
+If you have met [GroupBy](groupby.md), you can already half-build this: group by both columns and count. But groupby gives the answer back as a long stacked list, and you still have to reshape it into a grid yourself. `crosstab` is the shortcut made for exactly this one job. It gives you the grid directly, and includes the proportions and totals you would otherwise work out by hand. That is why it exists even though `groupby` could get you there the long way.
 
 ## Picture it
 
@@ -143,7 +143,7 @@ pd.crosstab(survey["device"], survey["plan"])
 survey.groupby(["device", "plan"]).size().unstack(fill_value=0)
 ```
 
-Both produce the identical grid. So why does `crosstab` exist? Convenience for the most common case. Frequency tables come up so often that pandas gives them a dedicated function with `normalize` baked in, rather than making you write the groupby-size-unstack dance every time.
+Both produce the identical grid. So why does `crosstab` exist? Convenience for the most common case. Frequency tables come up so often that pandas gives them a dedicated function with `normalize` built in, rather than making you write the groupby-size-unstack steps every time.
 
 This also places it in a small family: `value_counts()` is the **one-variable** frequency table (counts of a single column), and `crosstab` is the **two-variable** version (counts of pairs).
 

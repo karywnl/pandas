@@ -35,7 +35,7 @@ pd.to_numeric(df["qty"])                    # ["10", "20"] -> [10, 20]
 pd.to_numeric(pd.Series(["1", "x"]), errors="coerce")  # ["1", "x"] -> [1.0, NaN]
 ```
 
-**In one line:** `astype` for clean data, `to_numeric(errors="coerce")` for data that might fight back.
+**In one line:** `astype` for clean data, `to_numeric(errors="coerce")` for data that might be dirty.
 
 ### String to datetime
 

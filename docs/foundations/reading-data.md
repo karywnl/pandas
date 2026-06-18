@@ -75,7 +75,7 @@ But the default guesses are exactly the bugs earlier chapters warned about. Comp
     # zip                   str   <- "02134" preserved
     ```
 
-The four options you will reach for constantly:
+The four options you will use constantly:
 
 ```python
 pd.read_csv("sales.csv", dtype={"zip": str})        # force a column's type

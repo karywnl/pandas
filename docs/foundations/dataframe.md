@@ -54,7 +54,7 @@ pd.DataFrame({"a": [1, 2], "b": [1, 2, 3]})
 
 If some rows are missing a value, fill the gap with `None` instead of shortening the list.
 
-### Other ways in
+### Other ways to build one
 
 Sometimes your data arrives as rows, not columns. That is common from JSON or APIs.
 
@@ -108,7 +108,7 @@ df = pd.DataFrame(list(source))
 
 ### How dtypes are guessed
 
-Pandas infers each column's type from its values: all integers give `int64`, any decimal gives `float64`, text gives `str` (the dedicated string type in pandas 3.0), and a genuinely mixed column falls back to `object`. You can force a type with `pd.DataFrame(data, dtype=...)` or fix it afterward, covered in [data types](dtypes.md).
+Pandas infers each column's type from its values: all integers give `int64`, any decimal gives `float64`, text gives `str` (the dedicated string type in pandas 3.0), and a genuinely mixed column becomes `object`. You can force a type with `pd.DataFrame(data, dtype=...)` or fix it afterward, covered in [data types](dtypes.md).
 
 ## Gotchas
 

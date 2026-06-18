@@ -71,7 +71,7 @@ This is the whole decision in one line:
 
 `reset_index` names the new column after the index. If the index had a name (say `customer`), you get a `customer` column. If it had **no** name, you get a column literally called `index`, which can clash with the `.index` attribute and confuse later code. Name your index, or rename the result immediately.
 
-The `set_index` then `reset_index` round trip is lossless: the column comes back with the same name and type it left with.
+Doing `set_index` and then `reset_index` brings you back exactly where you started: the column comes back with the same name and type it had before.
 
 ## Gotchas
 
@@ -96,8 +96,8 @@ The `set_index` then `reset_index` round trip is lossless: the column comes back
 ## Where this connects
 
 !!! connect "The cleanup step"
-    - It is the exact inverse of [setting the index](set-index.md), and the two round-trip cleanly.
-    - You reach for it constantly after [GroupBy](../grouping/groupby.md), which parks the keys in the index.
+    - It is the exact inverse of [setting the index](set-index.md), and the two reverse each other cleanly.
+    - You use it constantly after [GroupBy](../grouping/groupby.md), which puts the keys in the index.
     - With `drop=True` it fixes the index gaps left by [boolean filtering](../selection/boolean-indexing.md), the same gaps that cause the integer-label trap in [loc and iloc](../selection/loc-iloc.md).
 
 !!! intuition "If you remember one thing"

@@ -5,7 +5,7 @@
 
 ## Why it exists
 
-You rarely want just one column. You want a tidy subset: the few features for a model, the columns for a report, everything except the junk. Listing the columns you want (or dropping the ones you do not) is how you carve a table down to size.
+You rarely want just one column. You want a tidy subset: the few features for a model, the columns for a report, everything except the columns you do not need. Listing the columns you want (or dropping the ones you do not) is how you reduce a table to what you need.
 
 ```python
 import pandas as pd
@@ -63,7 +63,7 @@ emp.drop(columns=["remote"])      # everything except remote
 ??? question "Quick check: predict the columns"
     Given the column order `name, dept, salary, remote`, what columns does `emp.loc[:, "name":"salary"]` return?
 
-    **Answer:** `name`, `dept`, and `salary`. A `loc` label slice includes **both** ends, so it sweeps from `name` through `salary` and keeps `dept` in between.
+    **Answer:** `name`, `dept`, and `salary`. A `loc` label slice includes **both** ends, so it goes from `name` through `salary` and keeps `dept` in between.
 
 ## Enforcing a column set with reindex
 
@@ -80,7 +80,7 @@ emp.reindex(columns=["name", "salary", "bonus"], fill_value=0)
 ## Under the hood
 
 !!! tip "New here? You have permission to skip this."
-    Listing names is all you need. This is a note on speed and a sharp edge.
+    Listing names is all you need. This is a note on speed and one tricky point.
 
 Selecting columns does not copy the underlying data, it references the existing column blocks, so pulling 5 columns from a 100-column table is cheap. The data is only copied if and when you modify the result.
 
@@ -111,4 +111,4 @@ Selecting columns does not copy the underlying data, it references the existing 
     - `reindex` here previews the alignment idea that drives [the index](../indexing/set-index.md) chapters.
 
 !!! intuition "If you remember one thing"
-    A list of names in brackets selects and reorders columns at once. Reach for `drop` when removing is simpler than listing, and `reindex` when every table must share one column set.
+    A list of names in brackets selects and reorders columns at once. Use `drop` when removing is simpler than listing, and `reindex` when every table must share one column set.

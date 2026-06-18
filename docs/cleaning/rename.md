@@ -5,7 +5,7 @@
 
 ## Why it exists
 
-Raw data arrives with awful column names: `"First Name"`, `"AGE "` with a trailing space, `"Unnamed: 3"`. Names with spaces force you into bracket notation forever and break dot access, and inconsistent casing causes joins to silently miss. Cleaning names early saves pain for the whole rest of the pipeline.
+Raw data arrives with awful column names: `"First Name"`, `"AGE "` with a trailing space, `"Unnamed: 3"`. Names with spaces force you into bracket notation forever and break dot access, and inconsistent casing causes joins to silently miss. Cleaning names early saves trouble for the whole rest of the pipeline.
 
 ```python
 import pandas as pd
@@ -35,9 +35,9 @@ df.columns = df.columns.str.strip().str.lower().str.replace(" ", "_")
 # "First Name" -> "first_name",  "AGE " -> "age"
 ```
 
-This is the workhorse for standardising a whole messy header row: trim whitespace, lowercase, turn spaces into underscores.
+This is the main tool for cleaning a whole messy header row: trim whitespace, lowercase, turn spaces into underscores.
 
-### Other handy moves
+### Other useful operations
 
 ```python
 df.columns = ["id", "age"]          # replace all names (list must match width exactly)
@@ -59,7 +59,7 @@ Prefixes and suffixes are great for tagging columns before a merge so you can te
 
 `rename` **silently ignores** old names that do not exist, so a typo in the key does nothing and raises no error, which can leave you puzzled when a rename "did not work". Pass `errors="raise"` to make a missing key complain instead. And remember it returns a new frame: without reassignment or `inplace=True`, the rename is lost.
 
-A good naming convention pays off everywhere: `snake_case`, all lowercase, no spaces, descriptive. It avoids quoting, dodges case-sensitivity bugs in joins, and keeps dot access from breaking.
+A good naming convention helps everywhere: `snake_case`, all lowercase, no spaces, descriptive. It avoids quoting, avoids case-sensitivity bugs in joins, and keeps dot access from breaking.
 
 ## Gotchas
 

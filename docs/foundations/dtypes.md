@@ -1,7 +1,7 @@
 # Data types
 
 !!! intuition "The gist"
-    Every column has a **dtype** that says how its values are stored. The dtype decides what operations are legal, how much memory you use, and whether bugs stay silent. Getting types right is not housekeeping, it is correctness.
+    Every column has a **dtype** that says how its values are stored. The dtype decides what operations are legal, how much memory you use, and whether bugs stay silent. Getting types right is not just tidying up, it is correctness.
 
 ## Why it exists
 
@@ -33,20 +33,20 @@ products.dtypes
 | `str` | text | the default for text in **pandas 3.0** |
 | `datetime64[ns]` | timestamps | made by `pd.to_datetime` |
 | `category` | repeated labels | huge memory win for low-variety text |
-| `object` | anything | the catch-all, and a warning sign |
+| `object` | anything | holds any type, and a warning sign |
 
 **In one line:** numbers are `int64`/`float64`, text is `str`, flags are `bool`, and `object` means "mixed, look closer".
 
 ## str vs object: what changed in pandas 3.0
 
-This trips up anyone coming from old tutorials. For years, a text column had dtype **`object`**, which meant "a box of arbitrary Python objects". In **pandas 3.0**, text now gets a proper **`str`** dtype by default: less memory, faster, and with clean missing-value handling.
+This confuses anyone coming from old tutorials. For years, a text column had dtype **`object`**, which meant "a box of arbitrary Python objects". In **pandas 3.0**, text now gets a proper **`str`** dtype by default: less memory, faster, and with clean missing-value handling.
 
 ```python
 pd.Series(["red", "green", "blue"]).dtype
 # str        (in pandas 3.0; older pandas showed: object)
 ```
 
-You will still see `object`, but now it usually means something is genuinely *mixed*, for example a column holding both numbers and text. That is a red flag worth investigating, not a normal string column.
+You will still see `object`, but now it usually means something is genuinely *mixed*, for example a column holding both numbers and text. That is a warning sign worth investigating, not a normal string column.
 
 ## The missing-value trap
 

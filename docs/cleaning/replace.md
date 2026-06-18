@@ -43,7 +43,7 @@ That `NaN` behaviour is the whole difference: `replace` keeps unknowns as-is, `m
 
 ### where and mask: swap by condition
 
-These two are mirror images, and the names are genuinely confusing, so here is the trick: **`where` keeps where the condition is true**; **`mask` replaces where the condition is true**.
+These two are opposites, and the names are genuinely confusing, so here is an easy way to remember: **`where` keeps where the condition is true**; **`mask` replaces where the condition is true**.
 
 ```python
 survey["score"].where(survey["score"] > 0, 0)   # keep positives, others -> 0  => [1, 0, 2]
@@ -71,7 +71,7 @@ survey["score"].clip(lower=0, upper=10)  # squeeze into [0, 10]
 
 **Regex for patterns.** With `regex=True`, `replace` matches patterns, not just exact strings, which is how you strip junk: `df.replace(r"[\$,]", "", regex=True)` removes dollar signs and commas. Without the flag, the pattern is treated literally.
 
-**Speed order.** Exact `map` from a dict is fastest (hash lookup). Plain `replace` is fast. Regex `replace` is slower (it runs the regex engine per value). A Python `apply(lambda ...)` is slowest of all, so reach for the vectorised options first.
+**Speed order.** Exact `map` from a dict is fastest (hash lookup). Plain `replace` is fast. Regex `replace` is slower (it runs the regex engine per value). A Python `apply(lambda ...)` is slowest of all, so use the vectorised options first.
 
 ## Gotchas
 

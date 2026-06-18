@@ -1,11 +1,11 @@
 # Dropping duplicates
 
 !!! intuition "The gist"
-    `duplicated()` flags repeated rows, and `drop_duplicates()` removes them. The catch worth learning up front: by default they compare **all columns**, so two rows only count as duplicates if every single value matches. Often you want to dedupe on just a **subset**.
+    `duplicated()` flags repeated rows, and `drop_duplicates()` removes them. One important thing to learn first: by default they compare **all columns**, so two rows only count as duplicates if every single value matches. Often you want to dedupe on just a **subset** of columns.
 
 ## Why it exists
 
-Duplicates sneak in everywhere: a pipeline retries and double-writes an event, two data extracts overlap, a user submits a form twice. Left alone they inflate counts and skew every total. Picture a signup log.
+Duplicates appear everywhere: a pipeline retries and writes an event twice, two data extracts overlap, a user submits a form twice. If you leave them in, they inflate counts and distort every total. Here is a signup log.
 
 ```python
 import pandas as pd
@@ -65,9 +65,9 @@ To keep the **most recent** record per email, sort first so the one you want lan
 ## Under the hood
 
 !!! tip "New here? You have permission to skip this."
-    Subset plus keep covers almost every case. Two sharp edges.
+    Subset plus keep covers almost every case. Two tricky points.
 
-**`NaN` counts as equal here.** Unlike normal `NaN` comparisons, `drop_duplicates` treats two missing values as matching, so rows `[NaN, 1]` and `[NaN, 1]` are duplicates. This is the one place `NaN` does not behave like its usual self.
+**`NaN` counts as equal here.** Unlike normal `NaN` comparisons, `drop_duplicates` treats two missing values as matching, so rows `[NaN, 1]` and `[NaN, 1]` are duplicates. This is the one place `NaN` does not behave the way it usually does.
 
 **Floats may not match exactly.** `0.1 + 0.2` is not exactly `0.3` in floating point, so values that look identical may not dedupe. Round first if you are deduping on computed floats.
 

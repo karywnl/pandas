@@ -1,11 +1,11 @@
 # GroupBy
 
 !!! intuition "The gist"
-    GroupBy answers "per category" questions like "total revenue **per region**". It works in three beats: **split** the rows into groups, **apply** a calculation to each group, and **combine** the answers into one result. This is the split-apply-combine pattern.
+    GroupBy answers "per category" questions like "total revenue **per region**". It works in three steps: **split** the rows into groups, **apply** a calculation to each group, and **combine** the answers into one result. This is the split-apply-combine pattern.
 
 ## Why it exists
 
-"What is the average salary per department?", "total sales per region per month?" In plain Python these need nested loops and bookkeeping. GroupBy does the whole thing in one line, fast, because the looping happens in C. Picture a small sales table.
+"What is the average salary per department?", "total sales per region per month?" In plain Python these need nested loops and extra tracking code. GroupBy does the whole thing in one line, fast, because the looping happens in C. Here is a small sales table.
 
 ```python
 import pandas as pd
@@ -77,7 +77,7 @@ sales.groupby("region", as_index=False)["revenue"].sum()
 ## Under the hood
 
 !!! tip "New here? You have permission to skip this."
-    Split-apply-combine is the whole idea. Two precision points.
+    Split-apply-combine is the whole idea. Two important details.
 
 **`count` vs `size`.** `size` counts every row in the group, including missing values. `count` counts only the non-null values, per column. For "how many rows in this group", you almost always want `size`.
 

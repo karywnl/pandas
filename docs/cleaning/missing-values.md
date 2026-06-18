@@ -5,7 +5,7 @@
 
 ## Why it exists
 
-Most maths and most models choke on missing data, or worse, quietly give wrong answers. So before analysis you have to decide what each hole means and what to do about it. Pretend you have a weather sensor that missed a few readings.
+Most maths and most models fail on missing data, or worse, quietly give wrong answers. So before analysis you have to decide what each hole means and what to do about it. Suppose you have a weather sensor that missed a few readings.
 
 ```python
 import pandas as pd, numpy as np
@@ -94,7 +94,7 @@ The difference, shown on the gap between 9am's 20 and 12pm's 24:
     Put `NaN` in an integer column and it becomes `float64`. Use the nullable `Int64` type if you need integers to survive, see [data types](../foundations/dtypes.md).
 
 !!! warning "Analyse before you fill"
-    Filling destroys the information about *why* data was missing. Look at the pattern with `isna().sum()` first; never fill on autopilot.
+    Filling destroys the information about *why* data was missing. Look at the pattern with `isna().sum()` first; never fill without thinking.
 
 ## Quick reference
 

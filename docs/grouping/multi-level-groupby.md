@@ -155,7 +155,7 @@ emp.groupby(["department", "seniority"]).agg(
 
 ### Flatten back to plain columns
 
-A MultiIndex is handy for slicing but inconvenient when you want to keep processing, merge, or export. To turn the index levels back into ordinary columns, use `reset_index`:
+A MultiIndex is useful for slicing but inconvenient when you want to keep processing, merge, or export. To turn the index levels back into ordinary columns, use `reset_index`:
 
 ```python
 by_pair.reset_index()

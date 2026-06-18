@@ -1,7 +1,7 @@
 # Series
 
 !!! intuition "The gist"
-    A **Series** is a single column of data that wears name tags. It is a one-dimensional list of values, plus an **index** (a label for each value) and a single **dtype** (the type of every value). A DataFrame is really just a bunch of Series standing side by side.
+    A **Series** is a single column of data with a label on every value. It is a one-dimensional list of values, plus an **index** (a label for each value) and a single **dtype** (the type of every value). A DataFrame is really just several Series placed side by side.
 
 ## Why it exists
 
@@ -38,7 +38,7 @@ Two things are *always* there: an **index** and a **dtype**. Even if you never s
 
 ## How it works
 
-Look things up by label, and run whole-column math in one go.
+Look things up by label, and run whole-column math all at once.
 
 ```python
 temps["Wed"]        # 30        (lookup by label)
@@ -86,7 +86,7 @@ Only the shared label `y` adds up. Everything else becomes `NaN`, because there 
 
 ### One dtype, on purpose
 
-A Series stores all its values in a single typed block of memory, so the type has to be uniform. That uniformity is what lets the math run as one fast C operation instead of a slow Python loop. If you mix types (say numbers and text), the Series falls back to the catch-all `object` dtype and you lose that speed.
+A Series stores all its values in a single typed block of memory, so the type has to be uniform. That uniformity is what lets the math run as one fast C operation instead of a slow Python loop. If you mix types (say numbers and text), the Series switches to the general-purpose `object` dtype and you lose that speed.
 
 ## Gotchas
 
@@ -115,4 +115,4 @@ A Series stores all its values in a single typed block of memory, so the type ha
     - The single-dtype rule leads straight into [data types](dtypes.md) and why missing values can change a column's type.
 
 !!! intuition "If you remember one thing"
-    A Series is a column with name tags. The values give you the data, the index lets you ask for it by name, and the labels are what pandas quietly lines up whenever two columns meet.
+    A Series is a column with a label on every value. The values give you the data, the index lets you ask for it by name, and the labels are what pandas quietly lines up whenever two columns meet.

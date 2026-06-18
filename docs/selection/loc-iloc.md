@@ -10,7 +10,7 @@ A pandas DataFrame lets you point at a cell in two completely different ways, an
 - The **index** and the **column names** are **labels**: the names you can see, such as `"Parasite"` or `"rating"`.
 - The **position** is the integer number of each row and column, counted from zero, no matter what the labels say.
 
-`loc` finds data by label. `iloc` finds data by position. Plain bracket access like `df['rating']` is convenient but limited: it can only grab whole columns by name or filter rows. The moment you want to say "these specific rows *and* these specific columns at the same time", you reach for `loc` or `iloc`.
+`loc` finds data by label. `iloc` finds data by position. Plain bracket access like `df['rating']` is convenient but limited: it can only grab whole columns by name or filter rows. The moment you want to say "these specific rows *and* these specific columns at the same time", you use `loc` or `iloc`.
 
 Here is a real DataFrame so every example is concrete.
 
@@ -88,7 +88,7 @@ movies.loc[movies["rating"] > 8.7]           # every row where rating beats 8.7
 
 That last line is the one you will use constantly. `loc` happily accepts a column of True and False values and keeps only the True rows. That has its own chapter: [boolean indexing](boolean-indexing.md).
 
-**In one line:** `loc` finds rows and columns by their labels, and it is the tool you will reach for most when filtering.
+**In one line:** `loc` finds rows and columns by their labels, and it is the tool you will use most when filtering.
 
 ### Selecting rows and columns together
 

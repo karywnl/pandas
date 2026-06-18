@@ -1,7 +1,7 @@
 # Aggregation
 
 !!! intuition "The gist"
-    Aggregation is the "apply" step of GroupBy: it reduces each group to summary numbers. `agg` lets you compute several statistics at once, give different columns different functions, and name the outputs cleanly. `transform` is its sibling that keeps the original shape.
+    Aggregation is the "apply" step of GroupBy: it reduces each group to summary numbers. `agg` lets you compute several statistics at once, give different columns different functions, and name the outputs cleanly. `transform` is a related method that keeps the original shape.
 
 ## Why it exists
 
@@ -22,7 +22,7 @@ sales = pd.DataFrame({
 
 ### Named aggregation (the one to learn)
 
-This is the cleanest form and the one to reach for. Each output is `name=("column", "function")`.
+This is the cleanest form and the one to use. Each output is `name=("column", "function")`.
 
 ```python
 sales.groupby("region").agg(

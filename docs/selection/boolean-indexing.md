@@ -68,7 +68,7 @@ movies[mask]
 # keeps The Matrix, The Dark Knight, Inception
 ```
 
-Most of the time you skip the variable and write it in one breath: `movies[movies["rating"] > 8.6]`.
+Most of the time you skip the variable and write it in one line: `movies[movies["rating"] > 8.6]`.
 
 ### The comparison operators
 
@@ -83,7 +83,7 @@ Every standard comparison builds a mask. These are the rules you can use.
 | `<` | less than | `movies["rating"] < 8.5` |
 | `<=` | less or equal | `movies["year"] <= 2008` |
 
-For text, `==` checks exact matches. For "contains this word" or "starts with", you reach for `.str.contains()` and friends, which is a story for the strings chapter.
+For text, `==` checks exact matches. For "contains this word" or "starts with", you use `.str.contains()` and similar methods, which are covered in the strings chapter.
 
 ### Combining rules with `&`, `|`, and `~`
 
@@ -163,7 +163,7 @@ movies.loc[movies["rating"] > 8.6, ["title", "rating"]]
 
 This is the cleanest way to say "these rows, just these columns". It is the same `loc` from [loc and iloc](loc-iloc.md), simply fed a mask instead of labels.
 
-**In one line:** build masks with comparisons, combine them with `& | ~` (each in parentheses), and reach for `isin`, `between`, or `query` to stay readable.
+**In one line:** build masks with comparisons, combine them with `& | ~` (each in parentheses), and use `isin`, `between`, or `query` to stay readable.
 
 ## Under the hood
 
@@ -243,9 +243,9 @@ movies[(movies["rating"] > 8.6) | (movies["rating"].isna())]
 ```
 
 ??? question "Quick check: where did it go?"
-    `movies` has 6 films. How many rows does `movies[movies["rating"] < 9.0]` return, and which film is missing for a sneaky reason?
+    `movies` has 6 films. How many rows does `movies[movies["rating"] < 9.0]` return, and which film is missing for a subtle reason?
 
-    **Answer:** **Four:** The Matrix, Interstellar, Parasite, Inception. The Dark Knight is out because 9.0 is not less than 9.0. And **Tenet** is out for the sneaky reason: its rating is `NaN`, and `NaN < 9.0` is `False`, so it was silently dropped.
+    **Answer:** **Four:** The Matrix, Interstellar, Parasite, Inception. The Dark Knight is out because 9.0 is not less than 9.0. And **Tenet** is out for the subtle reason: its rating is `NaN`, and `NaN < 9.0` is `False`, so it was silently dropped.
 
 ## Gotchas
 
