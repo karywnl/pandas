@@ -69,20 +69,25 @@ The `All` row and column give the per-row, per-column, and grand totals, the sam
 
 ### Proportions with normalize
 
-Raw counts are hard to compare when groups differ in size. `normalize` turns them into fractions:
+Raw counts are hard to compare when groups differ in size. There were more mobile respondents than desktop, so the bare counts do not tell you whether mobile users *prefer* free at a higher rate. `normalize` turns the counts into fractions so you can compare:
 
 ```python
 pd.crosstab(survey["device"], survey["plan"], normalize="index")
 # plan      free  paid
 # device
-# desktop   0.33  0.67     <- each ROW sums to 1
-# mobile    0.50  0.50
-
-pd.crosstab(survey["device"], survey["plan"], normalize=True)
-# every cell as a fraction of the grand total (all cells sum to 1)
+# desktop   0.33  0.67     <- this ROW sums to 1
+# mobile    0.50  0.50     <- so does this one
 ```
 
-`normalize="index"` makes each row sum to 1 (the breakdown *within* each device), `normalize="columns"` makes each column sum to 1, and `normalize=True` divides by the grand total.
+Now each row reads as a percentage breakdown *within* that device: of desktop users, 33% are free and 67% are paid.
+
+The one trap is the option's name. `normalize="index"` divides each cell by its **row** total — it is called `"index"` because the row labels are the DataFrame's index. So:
+
+- `normalize="index"` → each **row** sums to 1 (breakdown across the columns, within each row)
+- `normalize="columns"` → each **column** sums to 1
+- `normalize=True` → divide by the grand total, so **every cell** is a fraction of the whole and all cells together sum to 1
+
+A quick way to keep it straight: normalize names the thing held *fixed*. `"index"` holds each row fixed and splits it across the columns.
 
 ### Summarising a number instead of counting
 
@@ -133,7 +138,7 @@ This also places it in a small family: `value_counts()` is the **one-variable** 
     `pd.crosstab(df["a"], df["b"])` works; `pd.crosstab("a", "b")` does not. Unlike `pivot_table`, `crosstab` takes the actual arrays, not column-name strings.
 
 !!! warning "normalize directions are easy to flip"
-    `"index"` makes rows sum to 1, `"columns"` makes columns sum to 1, `True` divides by the grand total. Say out loud which breakdown you want before choosing.
+    `"index"` makes rows sum to 1, `"columns"` makes columns sum to 1, `True` divides by the grand total. The name is the thing held *fixed*: `"index"` (the row labels) keeps each row fixed and splits it across the columns. Say out loud which breakdown you want before choosing.
 
 ## Quick reference
 
