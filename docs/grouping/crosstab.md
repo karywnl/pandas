@@ -81,7 +81,7 @@ pd.crosstab(survey["device"], survey["plan"], normalize="index").round(2)
 
 Now each row reads as a percentage breakdown *within* that device: of desktop users, 33% are free and 67% are paid.
 
-The one trap is the option's name. `normalize="index"` divides each cell by its **row** total — it is called `"index"` because the row labels are the DataFrame's index. So:
+The one trap is the option's name. `normalize="index"` divides each cell by its **row** total. It is called `"index"` because the row labels are the DataFrame's index. So:
 
 - `normalize="index"` → each **row** sums to 1 (breakdown across the columns, within each row)
 - `normalize="columns"` → each **column** sums to 1
