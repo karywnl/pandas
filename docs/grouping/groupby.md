@@ -111,6 +111,7 @@ By default, groups with a missing key are dropped. Pass `dropna=False` to keep a
     - Reshaping a two-key group into a grid is [pivot tables](pivot.md).
     - The key lands in the index, so you often follow up with [resetting the index](../indexing/reset-index.md).
     - Grouping by a [datetime index](../indexing/set-index.md) is how time-based summaries work.
+    - Real analysis often starts by [merging](../combining/merge.md) separate tables into one, then grouping the combined result.
 
 !!! intuition "If you remember one thing"
     Split, apply, combine. `df.groupby(key)[col].agg()` splits rows by the key, runs the aggregation per group, and combines the answers into one tidy result.

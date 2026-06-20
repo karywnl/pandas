@@ -114,6 +114,7 @@ The difference, shown on the gap between 9am's 20 and 12pm's 24:
     - The `float64` upcast comes straight from [data types](../foundations/dtypes.md).
     - Filtering [silently drops `NaN`](../selection/boolean-indexing.md) because of the same `NaN != NaN` rule.
     - Group-aware filling (fill each group with its own median) uses `transform`, covered in [aggregation](../grouping/aggregation.md).
+    - A [merge](../combining/merge.md) creates fresh `NaN` for unmatched rows, so a `how="left"` merge plus `isna()` is the standard way to find rows with no partner.
 
 !!! intuition "If you remember one thing"
     Three moves: find with `isna`, drop with `dropna`, fill with `fillna` or `interpolate`. Use `interpolate` for ordered data, and always look at the pattern of holes before patching them.

@@ -20,14 +20,17 @@ flowchart LR
     IDX --> CLEAN["Cleaning data<br/>missing, dupes,<br/>rename, replace, dtypes"]
     CLEAN --> GRP["Grouping and reshaping<br/>groupby, multi-level,<br/>aggregate, pivot, crosstab"]
     SEL --> CLEAN
+    CLEAN --> COMB["Combining data<br/>merge tables<br/>on shared keys"]
+    COMB --> GRP
     style F fill:#5e35b1,color:#fff
     style SEL fill:#5e35b1,color:#fff
     style IDX fill:#5e35b1,color:#fff
     style CLEAN fill:#5e35b1,color:#fff
     style GRP fill:#5e35b1,color:#fff
+    style COMB fill:#7e57c2,color:#fff,stroke:#fff,stroke-width:3px
 ```
 
-Start at **Foundations** to learn what a Series and a DataFrame even are, move through **Selecting** and **Cleaning**, and finish with **Grouping**, where you answer real "per category" questions. Each chapter ends by linking to the ones it leans on, so you can follow the threads in any direction.
+Start at **Foundations** to learn what a Series and a DataFrame even are, move through **Selecting** and **Cleaning**, **combine** separate tables with merge, and finish with **Grouping**, where you answer real "per category" questions. Each chapter ends by linking to the ones it leans on, so you can follow the threads in any direction. The highlighted node is the newest chapter.
 
 ## Where to begin
 
@@ -66,5 +69,13 @@ Start at **Foundations** to learn what a Series and a DataFrame even are, move t
     Split, apply, combine. Answer "per region" and "per month" questions and pivot the results into a grid.
 
     [:octicons-arrow-right-24: GroupBy](grouping/groupby.md)
+
+-   :material-call-merge:{ .lg .middle } **Combining data**
+
+    ---
+
+    Join two tables on a shared key, pick how much of each side to keep, and handle the gaps.
+
+    [:octicons-arrow-right-24: Merge DataFrames](combining/merge.md)
 
 </div>
