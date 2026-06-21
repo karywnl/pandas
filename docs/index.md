@@ -20,7 +20,7 @@ flowchart LR
     IDX --> CLEAN["Cleaning data<br/>missing, dupes,<br/>rename, replace, dtypes"]
     CLEAN --> GRP["Grouping and reshaping<br/>groupby, multi-level,<br/>aggregate, pivot, crosstab"]
     SEL --> CLEAN
-    CLEAN --> COMB["Combining data<br/>merge tables<br/>on shared keys"]
+    CLEAN --> COMB["Combining data<br/>merge on keys,<br/>concat by position"]
     COMB --> GRP
     style F fill:#5e35b1,color:#fff
     style SEL fill:#5e35b1,color:#fff
@@ -74,7 +74,7 @@ Start at **Foundations** to learn what a Series and a DataFrame even are, move t
 
     ---
 
-    Join two tables on a shared key, pick how much of each side to keep, and handle the gaps.
+    Join two tables on a shared key with merge, or stack same-shape tables together with concat.
 
     [:octicons-arrow-right-24: Merge DataFrames](combining/merge.md)
 

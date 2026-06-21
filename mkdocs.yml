@@ -105,3 +105,4 @@ nav:
       - Cross tabulation: grouping/crosstab.md
   - Combining data:
       - Merge DataFrames: combining/merge.md
+      - Concatenate DataFrames: combining/concat.md

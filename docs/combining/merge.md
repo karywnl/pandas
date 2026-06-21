@@ -251,7 +251,7 @@ The values are `both`, `left_only`, and `right_only`. This is the fastest way to
 !!! tip "New here? You have permission to skip this."
     "Pick a key with `on`, pick how much to keep with `how`, watch for `NaN`" is the whole chapter. The cheat sheet is below. Come back for these details when a merge surprises you.
 
-**Merge matches by value using a hash table, not by row position.** pandas builds a lookup of the key column for one side, then for each row of the other side finds the matching keys. Order does not matter, and the average cost is about `O(n + m)` for tables of size `n` and `m`. This is why integer keys merge faster than string keys: hashing an integer is cheaper than hashing text.
+**Merge matches by value, not by row position.** To join, pandas first reads one table's key column and builds a quick lookup from it: for each key, where are the rows that have it. Then it goes through the other table once and uses that lookup to find each row's matches. Because it looks keys up directly instead of comparing every row against every other row, it stays fast even on big tables, and the order of the rows in either table does not matter. (A small practical effect: number keys are a little quicker to look up than text keys, so `customer_id` as an integer beats it as a string.)
 
 **`NaN` matches `NaN` in pandas (unlike SQL).** This surprises people coming from databases. If both tables have rows with a missing key, those missing keys are treated as **equal** and get joined together:
 
@@ -283,7 +283,7 @@ That joined row is rarely meaningful (two different unknowns are not really "the
     When non-key columns clash, the default `_x` / `_y` tell you nothing about which side is which. Always set `suffixes=("_left_meaning", "_right_meaning")`.
 
 !!! warning "`merge` aligns on values, `concat` stacks on position"
-    `merge` is for joining tables that share a **key**. If you just want to stack tables on top of each other (same columns, more rows) or set them side by side by position, that is `pd.concat`, a different tool. Reaching for `merge` to stack rows is a common mix-up.
+    `merge` is for joining tables that share a **key**. If you just want to stack tables on top of each other (same columns, more rows) or set them side by side by position, that is [`pd.concat`](concat.md), a different tool. Reaching for `merge` to stack rows is a common mix-up.
 
 ## Quick reference
 
@@ -306,7 +306,7 @@ That joined row is rarely meaningful (two different unknowns are not really "the
     - Matching on the index instead of a column ties back to [setting the index](../indexing/set-index.md), and the redundant key column you drop afterward uses plain [column selection](../selection/column-selection.md).
     - Mismatched key types are fixed with [changing data types](../cleaning/change-dtypes.md); this is the most common reason a merge "finds nothing".
     - After merging, you usually [group](../grouping/groupby.md) and [aggregate](../grouping/aggregation.md) the combined table: merge brings the columns together, GroupBy summarizes them.
-    - `merge` joins on keys; its sibling `concat` stacks tables by position. Different jobs, often confused.
+    - `merge` joins on keys; its sibling [`concat`](concat.md) stacks tables by position. Different jobs, often confused.
 
 !!! intuition "If you remember one thing"
     Every merge is two decisions: the **key** to match on (`on`, or `left_on`/`right_on`) and **how much to keep** when a row has no partner (`how`). Inner keeps matches, left keeps the left side, outer keeps all, and every gap becomes `NaN`.
