@@ -208,7 +208,7 @@ A merge can quietly change your row count, and understanding why is the differen
 
 - **One-to-one:** the key is unique on both sides. Output has one row per match, same size as the inputs. Example: customers joined to a one-row-per-customer profile table.
 - **One-to-many:** the key is unique on the left but repeats on the right. The left row is **copied** for each match. That is why Ana appeared twice above: one customer, two orders. This is the most common shape in real work.
-- **Many-to-many:** the key repeats on **both** sides. Every matching left row pairs with every matching right row (a Cartesian product), so a key that appears 2 times on the left and 3 times on the right turns into 6 rows. This is almost always a mistake and can blow up your row count.
+- **Many-to-many:** the key repeats on **both** sides. Every matching left row pairs with every matching right row (a Cartesian product), so a key that appears 2 times on the left and 3 times on the right turns into 6 rows. This is almost always a mistake and can inflate your row count.
 
 ### Catching mistakes: `validate`
 
@@ -223,7 +223,7 @@ pd.merge(customers, orders, on="customer_id", validate="one_to_one")
 # MergeError: Merge keys are not unique in right dataset; not a one-to-one merge
 ```
 
-The options are `"one_to_one"`, `"one_to_many"`, `"many_to_one"`, and `"many_to_many"`. Adding `validate` turns a silent data bug into a loud, immediate error, which is exactly what you want. Reach for it whenever you are not 100% sure the keys are unique.
+The options are `"one_to_one"`, `"one_to_many"`, `"many_to_one"`, and `"many_to_many"`. Adding `validate` turns a silent data bug into a loud, immediate error, which is exactly what you want. Use it whenever you are not sure the keys are unique.
 
 **In one line:** `validate` states the relationship you expect and fails fast if the keys do not honor it.
 
@@ -251,7 +251,45 @@ The values are `both`, `left_only`, and `right_only`. This is the fastest way to
 !!! tip "New here? You have permission to skip this."
     "Pick a key with `on`, pick how much to keep with `how`, watch for `NaN`" is the whole chapter. The cheat sheet is below. Come back for these details when a merge surprises you.
 
-**Merge matches by value, not by row position.** To join, pandas first reads one table's key column and builds a quick lookup from it: for each key, where are the rows that have it. Then it goes through the other table once and uses that lookup to find each row's matches. Because it looks keys up directly instead of comparing every row against every other row, it stays fast even on big tables, and the order of the rows in either table does not matter. (A small practical effect: number keys are a little quicker to look up than text keys, so `customer_id` as an integer beats it as a string.)
+**How a merge actually runs: the hash join.** To join two tables, pandas never compares every row of one against every row of the other (far too slow on big data). It works in **two passes**. Follow them on the pictures below, using the `customers` and `orders` tables from this page.
+
+**Pass 1: build a lookup.** pandas reads the `orders` table's `customer_id` column once and builds the small table on the right, called a **lookup**:
+
+```text
+  orders table                         lookup it builds
+  +----------+-------------+           +-----+------------+
+  | order_id | customer_id |           | key | order rows |
+  +----------+-------------+           +-----+------------+
+  | 101      | 1           |    -->    | 1   | 101, 102   |
+  | 102      | 1           |           | 2   | 103        |
+  | 103      | 2           |           | 5   | 104        |
+  | 104      | 5           |           +-----+------------+
+  +----------+-------------+
+```
+
+Read the lookup on the right: each key now points straight to the order rows that have it. Key `1` points to orders 101 and 102, key `2` to order 103, key `5` to order 104.
+
+But *why* is finding a key in this lookup instant, rather than a search through it? Through **hashing**, which is where **hash join** gets its name. A **hash function** is a fixed rule that turns a key into a slot number. pandas stores key `1`'s rows in whatever slot the rule gives for `1`; to find them later, it runs the *same* rule on `1`, lands on the *same* slot, and reads them straight off. No scanning, just one calculation, so the lookup stays equally fast whether it holds ten keys or ten million. (That size-independent speed is what **constant time**, or **O(1)**, means.)
+
+**Pass 2: look each key up.** Now pandas goes down the other table, `customers`, one row at a time, and looks each `customer_id` up in the lookup it just built:
+
+```text
+  customers table
+  +-------------+------+
+  | customer_id | name |
+  +-------------+------+
+  | 1           | Ana  |   look up 1 -> found 101, 102 -> 2 rows out
+  | 2           | Ben  |   look up 2 -> found 103      -> 1 row out
+  | 3           | Cara |   look up 3 -> not found      -> dropped (inner)
+  | 4           | Dan  |   look up 4 -> not found      -> dropped (inner)
+  +-------------+------+
+```
+
+Read it row by row. Ana's key `1` is in the lookup, pointing to orders 101 and 102, so Ana comes out as **two** joined rows. Ben's key `2` points to one order, so one row. Cara's `3` and Dan's `4` are not in the lookup at all, so for an inner join they drop out. That is the whole engine.
+
+This also shows what `how` really chooses: the fate of a key that pass 2 does **not** find, like Cara's and Dan's. Inner drops it; left, right, and outer keep it and fill the missing side with `NaN`.
+
+Two more facts follow from this design. Row order never matters, because pass 2 finds rows by key value, not by position. And merge joins exactly **two** tables, because the method has one table to build the lookup and one to scan against it; [`concat`](concat.md), which only stacks by position, has no such pairing and takes a whole list.
 
 **`NaN` matches `NaN` in pandas (unlike SQL).** This surprises people coming from databases. If both tables have rows with a missing key, those missing keys are treated as **equal** and get joined together:
 
@@ -274,7 +312,7 @@ That joined row is rarely meaningful (two different unknowns are not really "the
     Merging an integer key against a string key does not silently return zero matches; in pandas 3.0 it **raises** a `ValueError`: *"You are trying to merge on int64 and str columns."* This is a feature: it stops a broken join early. Fix it by making both keys the same type first, for example `df["k"] = df["k"].astype(int)`. See [changing data types](../cleaning/change-dtypes.md).
 
 !!! warning "A duplicate key can multiply your rows"
-    If a key you thought was unique actually repeats on both sides, you get a many-to-many Cartesian product and the row count explodes. Check `left.shape` and `right.shape` against `result.shape`, and pass `validate=` to make the assumption explicit.
+    If a key you thought was unique actually repeats on both sides, you get a many-to-many Cartesian product and the row count grows sharply. Check `left.shape` and `right.shape` against `result.shape`, and pass `validate=` to make the assumption explicit.
 
 !!! warning "NaN keys join to each other"
     pandas treats two missing keys as equal and merges them, which is almost never what you mean. Clean missing keys out before merging.
@@ -283,7 +321,7 @@ That joined row is rarely meaningful (two different unknowns are not really "the
     When non-key columns clash, the default `_x` / `_y` tell you nothing about which side is which. Always set `suffixes=("_left_meaning", "_right_meaning")`.
 
 !!! warning "`merge` aligns on values, `concat` stacks on position"
-    `merge` is for joining tables that share a **key**. If you just want to stack tables on top of each other (same columns, more rows) or set them side by side by position, that is [`pd.concat`](concat.md), a different tool. Reaching for `merge` to stack rows is a common mix-up.
+    `merge` is for joining tables that share a **key**. If you just want to stack tables on top of each other (same columns, more rows) or set them side by side by position, that is [`pd.concat`](concat.md), a different tool. Using `merge` to stack rows is a common mix-up.
 
 ## Quick reference
 

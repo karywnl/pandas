@@ -71,7 +71,7 @@ survey["score"].clip(lower=0, upper=10)  # squeeze into [0, 10]
 
 **Regex for patterns.** With `regex=True`, `replace` matches patterns, not just exact strings, which is how you strip junk: `df.replace(r"[\$,]", "", regex=True)` removes dollar signs and commas. Without the flag, the pattern is treated literally.
 
-**Speed order.** Exact `map` from a dict is fastest (hash lookup). Plain `replace` is fast. Regex `replace` is slower (it runs the regex engine per value). A Python `apply(lambda ...)` is slowest of all, so use the vectorised options first.
+**Speed order.** Exact `map` from a dict is fastest (a direct key lookup). Plain `replace` is fast. Regex `replace` is slower (it runs the regex engine per value). A Python `apply(lambda ...)` is slowest of all, so use the vectorised options first.
 
 ## Gotchas
 

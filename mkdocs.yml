@@ -103,6 +103,7 @@ nav:
       - Multi-level GroupBy: grouping/multi-level-groupby.md
       - Pivot tables: grouping/pivot.md
       - Cross tabulation: grouping/crosstab.md
+      - Melt (wide to long): grouping/melt.md
   - Combining data:
       - Merge DataFrames: combining/merge.md
       - Concatenate DataFrames: combining/concat.md

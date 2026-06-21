@@ -94,7 +94,7 @@ books2 = books.set_index("title")                 # use a real column as the row
 
 ### Why columns, not rows
 
-Pandas stores each column as one contiguous typed array. When you pass a dict of lists, pandas can wrap each list directly as a column with almost no copying. Building a DataFrame **row by row in a loop** is the classic mistake: each step rebuilds and recopies the whole table, turning a quick job into a slow one.
+Pandas stores each column as one block of values that all share a type, kept together in memory. When you pass a dict of lists, pandas can wrap each list directly as a column with almost no copying. Building a DataFrame **row by row in a loop** is the classic mistake: each step rebuilds and recopies the whole table, turning a quick job into a slow one.
 
 ```python
 # Slow: rebuilds the table every iteration

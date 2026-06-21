@@ -79,7 +79,7 @@ A million-row column with five distinct values goes from hundreds of megabytes a
 !!! tip "New here? You have permission to skip this."
     Knowing "numbers, text, bool, and watch out for object" is enough to start. This is the memory story behind the advice.
 
-Storage cost per value is wildly different. Picking the right type is real money on big data:
+Storage cost per value is very different. Picking the right type is a real cost on big data:
 
 | Type | Per value | 10M values |
 | --- | --- | --- |

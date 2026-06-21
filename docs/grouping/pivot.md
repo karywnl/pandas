@@ -241,6 +241,7 @@ They give identical results. `pivot_table()` is the concise version with extra o
     - The cell combining is ordinary [aggregation](aggregation.md), so any `aggfunc` (sum, mean, count, custom) works.
     - The result is a normal DataFrame, so you can keep [selecting](../selection/column-selection.md), [filtering](../selection/boolean-indexing.md), and sorting it.
     - For frequency tables (counting category combinations), [cross tabulation](crosstab.md) is the specialised, more convenient version.
+    - The opposite direction, wide back to long, is [melt](melt.md): pivoting spreads rows into columns, melting folds columns into rows.
 
 !!! intuition "If you remember one thing"
     Both turn a long list into a grid. `pivot()` only rearranges, so each cell needs exactly one value. `pivot_table()` rearranges **and** combines clashing values with an `aggfunc`, which is why it is the one you will almost always use.

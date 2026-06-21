@@ -140,10 +140,10 @@ The extra brackets are not decoration. They change the *type* of thing you get b
 
 ## Under the hood
 
-Here is where we go all the way down. None of what follows is trivia, it explains the two bugs that bite pandas learners most often.
+Here is the deepest part. None of what follows is trivia; it explains the two bugs that catch pandas learners most often.
 
 !!! tip "New here? You have permission to skip this."
-    Everything below explains *why* pandas behaves the way it does. It is the good stuff, but you do not need a single word of it to start using `loc` and `iloc` today. If your brain is full, jump straight to the [cheat sheet](#quick-reference) and come back to this part later. Nothing here is required to be productive right now.
+    Everything below explains *why* pandas behaves the way it does. It is worth knowing, but you do not need a single word of it to start using `loc` and `iloc` today. If that is enough for now, jump straight to the [cheat sheet](#quick-reference) and come back to this part later. Nothing here is required to be productive right now.
 
 ### Why loc slices are inclusive but iloc slices are not
 
@@ -242,7 +242,7 @@ top.iloc[4]   # position 4? only 3 rows now -> IndexError
 
 This is the deepest and most valuable part, so take it slowly. It explains the `SettingWithCopyWarning` that has confused pandas users for a decade.
 
-A DataFrame does not store each column as a separate loose object. Under the hood, pandas groups columns of the same dtype into shared blocks of memory. All the float columns might sit together in one contiguous slab, all the integers in another. This machinery is called the **BlockManager**.
+A DataFrame does not store each column as a separate loose object. Under the hood, pandas groups columns of the same dtype into shared blocks of memory. All the float columns might sit together in one block of memory, all the integers in another. This machinery is called the **BlockManager**.
 
 ```text
 DataFrame "movies"
@@ -254,7 +254,7 @@ DataFrame "movies"
        float block -> [ rating ]              (another slab)
 ```
 
-When you slice a DataFrame, pandas faces a choice. If the data you asked for is already sitting in one clean contiguous run of memory, it can hand you a **view**: a window onto the original data, sharing the same memory. No copying, very fast. But writing through a view also changes the original, because they are the same bytes. If the data you asked for is scattered (different dtypes, non contiguous rows), pandas cannot make a window, so it builds a **copy**: fresh independent memory. Writing to a copy leaves the original untouched.
+When you slice a DataFrame, pandas faces a choice. If the data you asked for is already sitting in one unbroken run of memory, it can hand you a **view**: a window onto the original data, sharing the same memory. No copying, very fast. But writing through a view also changes the original, because they are the same bytes. If the data you asked for is scattered (different dtypes, or rows not stored next to each other), pandas cannot make a window, so it builds a **copy**: fresh independent memory. Writing to a copy leaves the original untouched.
 
 The trouble is that whether you get a view or a copy can depend on the dtypes and the exact slice, which means it is hard to predict. And that unpredictability is exactly what breaks **chained indexing**:
 
@@ -298,7 +298,7 @@ Same idea as `loc` and `iloc` (label vs position), just specialised for a single
 
 ### Why a labelled index is fast
 
-One more reason `loc` is not just convenient but genuinely efficient. When you set a meaningful index, pandas builds a hash table behind it. Looking up `movies.loc["Parasite"]` is then close to instant, an O(1) jump, the same way a Python dictionary finds a key. Compare that with scanning an ordinary column, like `movies[movies["year"] == 2019]`, which has to walk every row to find the matches, an O(n) operation. For a handful of movies the difference is invisible. For a few million rows it is the difference between instant and a noticeable pause. This is why setting a good index (a topic of its own) pays off, and `loc` is how you cash in that speed.
+One more reason `loc` is not just convenient but genuinely efficient. When you set a meaningful index, pandas builds a **lookup** behind it that can jump straight to a label's row in a single step, instead of checking the rows one by one. So `movies.loc["Parasite"]` stays close to instant no matter how many rows there are. (That single, fixed cost is what people call a **constant time**, or **O(1)**, lookup.) Compare that with scanning an ordinary column, like `movies[movies["year"] == 2019]`, which has to walk every row to find the matches, so the work grows with the number of rows (an **O(n)** operation). For a handful of movies the difference is invisible. For a few million rows it is the difference between instant and a noticeable pause. This is why setting a good index (a topic of its own) pays off, and `loc` is how you use that speed.
 
 ## Quick reference
 
@@ -319,7 +319,7 @@ One more reason `loc` is not just convenient but genuinely efficient. When you s
 
 !!! connect "loc and iloc plug into the rest of pandas like this"
     - [**Boolean indexing**](boolean-indexing.md) is just `loc` being fed a column of True and False. When you write `df[df["rating"] > 8]`, you are using a mask, and doing it through `df.loc[mask, cols]` is how you filter rows and pick columns in the same move.
-    - [**Setting the index**](../indexing/set-index.md) (`set_index`) is what gives `loc` meaningful names to look up, and turns on that fast O(1) hash lookup described above.
+    - [**Setting the index**](../indexing/set-index.md) (`set_index`) is what gives `loc` meaningful names to look up, and turns on that fast O(1) index lookup described above.
     - [**Resetting the index**](../indexing/reset-index.md) (`reset_index`) is the cleanup you run after filtering, precisely to fix the "labels no longer match positions" trap from this page.
     - **The SettingWithCopyWarning** you will meet again in [handling missing values](../cleaning/missing-values.md) and [replacing values](../cleaning/replace.md), because filling and replacing are assignments, and the same one `loc` call rule keeps them safe.
 

@@ -76,7 +76,7 @@ orders.set_index(["customer", "order_id"])   # group rows by customer, then id
 !!! tip "New here? You have permission to skip this."
     You can use a meaningful index knowing only "look rows up by name". Here is why it is also fast.
 
-When you set an index, pandas builds a **hash table** over the labels. Looking up `orders.loc[103]` is then an O(1) jump, like a Python dictionary, no matter how many rows there are. The alternative, scanning a column with `orders[orders["order_id"] == 103]`, is an O(n) walk over every row. On millions of rows that is the difference between instant and a visible pause.
+When you set an index, pandas builds a **lookup** over the labels that can jump straight to a row in one step, instead of checking the rows one by one. Looking up `orders.loc[103]` then stays fast no matter how many rows there are (a **constant time**, or **O(1)**, lookup). The alternative, scanning a column with `orders[orders["order_id"] == 103]`, has to walk every row, so its cost grows with the number of rows (an **O(n)** walk). On millions of rows that is the difference between instant and a visible pause.
 
 The index also drives **alignment**: arithmetic between two frames matches rows by label automatically, so `revenue - cost` lines up by date even if the rows are in different orders. A sorted, unique index gives the best performance for both lookups and slices, so `df.sort_index()` is often worth it.
 

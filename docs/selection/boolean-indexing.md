@@ -167,20 +167,20 @@ This is the cleanest way to say "these rows, just these columns". It is the same
 
 ## Under the hood
 
-Three things are worth understanding deeply here: why this is so fast, why the operators are so fussy, and why missing data vanishes.
+Three things are worth understanding deeply here: why this is so fast, why the operators are so strict, and why missing data disappears.
 
 !!! tip "New here? You have permission to skip this."
-    You can filter perfectly well knowing only "build a mask, combine with `& | ~` in parentheses". Everything below is the *why*. If you are full, jump to the [cheat sheet](#quick-reference) and come back when something surprises you.
+    You can filter perfectly well knowing only "build a mask, combine with `& | ~` in parentheses". Everything below is the *why*. If that is enough for now, jump to the [cheat sheet](#quick-reference) and come back when something surprises you.
 
 ### Why it is fast: vectorization
 
-When you write `movies["rating"] > 8.6`, pandas does not loop in Python. The rating column is stored as one tight block of numbers (a NumPy array), and the comparison runs as a single operation in compiled C code that walks the whole block at once. This is called **vectorization**. A Python loop pays interpreter overhead on every single element; the vectorized version pays it once. On a million rows that is the difference between "instant" and "go make coffee".
+When you write `movies["rating"] > 8.6`, pandas does not loop in Python. The rating column is stored as one tight block of numbers (a NumPy array), and the comparison runs as a single operation in compiled C code that walks the whole block at once. This is called **vectorization**. A Python loop makes the interpreter do a little extra work on every single element; the vectorized version pays that cost only once. On a million rows the vectorized check finishes almost instantly, while the plain Python loop can take a long time.
 
 The mask it produces is cheap too: one byte per row. A million-row mask is about a megabyte, so combining and reusing masks costs almost nothing.
 
 ### Why it is `&` and not `and` { #why-and-not-and }
 
-This is the bug everyone hits once. Two separate rules are at play.
+This is the mistake almost everyone makes once. Two separate rules are at work.
 
 **Rule one: `and` does not work on Series.** Python's `and` and `or` are built into the language, and pandas is not allowed to redefine what they mean. When Python evaluates `series_a and series_b`, it tries to ask "is `series_a` true?", which forces a whole Series into a single yes or no. A Series of six values is neither, so pandas refuses:
 
@@ -198,7 +198,7 @@ movies[movies["rating"] > 8.6 & movies["genre"] == "Sci-Fi"]
 # TypeError: unsupported operand type(s) for &: 'float' and 'StringArray'
 ```
 
-Python reads that as `movies["rating"] > (8.6 & movies["genre"]) == "Sci-Fi"`. It tries to compute `8.6 & "Sci-Fi"` first, which is nonsense, and blows up. Wrapping each condition in parentheses forces the comparisons to happen first, then the `&` joins two clean masks.
+Python reads that as `movies["rating"] > (8.6 & movies["genre"]) == "Sci-Fi"`. It tries to compute `8.6 & "Sci-Fi"` first, which is nonsense, and raises an error. Wrapping each condition in parentheses forces the comparisons to happen first, then the `&` joins two clean masks.
 
 ??? question "Quick check: spot the bug"
     A teammate writes `movies[movies["year"] > 2010 and movies["genre"] == "Sci-Fi"]` and gets an error. Which error, and what is the fix?

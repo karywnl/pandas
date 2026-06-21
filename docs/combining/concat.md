@@ -121,7 +121,7 @@ pd.concat([week1, week2], keys=["week1", "week2"])
 #       2  Wed   9000
 ```
 
-The result has a [MultiIndex](../grouping/multi-level-groupby.md): the outer level says which week, the inner level is the original row number. Now `result.loc["week2"]` pulls back just the second week. Reach for `keys` when the *source* of each row is information you want to keep, not throw away. (Note: `keys` and `ignore_index` are opposites, so you would not use both.)
+The result has a [MultiIndex](../grouping/multi-level-groupby.md): the outer level says which week, the inner level is the original row number. Now `result.loc["week2"]` pulls back just the second week. Use `keys` when the *source* of each row is information you want to keep, not throw away. (Note: `keys` and `ignore_index` are opposites, so you would not use both.)
 
 **In one line:** `keys=[...]` stamps each input with a label in a new outer index level, so you can still tell the pieces apart.
 
@@ -199,7 +199,35 @@ This is the most common `axis=1` mistake: tables whose indexes do not line up pr
 !!! tip "New here? You have permission to skip this."
     "List of tables in, one stacked table out: `axis=0` adds rows, `axis=1` adds columns, `ignore_index=True` cleans the index" is the whole chapter. Come back here when concat does something surprising.
 
-**`concat` lines tables up by label, not by data.** When you stack rows (`axis=0`), it looks at the **column names**: each value goes under the column with the same name, and if a table does not have one of the columns, those cells become `NaN`. When you stack columns (`axis=1`), it does the same thing, just using the **row index** instead of the column names. Either way, it never looks at the *values* inside the cells. That is the real difference from [merge](merge.md), which matches on values, and it is why `concat` can take a whole list of tables at once while merge joins exactly two.
+**How a concat actually runs.** It works in **two steps**. Follow them on the `phone` and `watch` tables from earlier: both record `steps`, but `phone` also has `sleep` and `watch` also has `calories`.
+
+**Step 1: line up the labels.** pandas first decides the columns of the result by collecting the column names from every input table:
+
+```text
+  phone columns:  steps  sleep
+  watch columns:  steps         calories
+                  ------------------------
+  result columns: steps  sleep  calories   (the union)
+```
+
+Read down the picture: `steps` is in both tables, `sleep` is only in `phone`, `calories` is only in `watch`. By default the result keeps **all** of them (the union), so its columns are `steps`, `sleep`, `calories`. (With `join="inner"` it would keep only the column in *both*, `steps`.) For `axis=1`, this same lining-up happens on the row index instead of the column names.
+
+**Step 2: copy the blocks in.** Now pandas makes one empty result with those columns and copies each input's values into place, once:
+
+```text
+  +-------+-------+----------+
+  | steps | sleep | calories |
+  +-------+-------+----------+
+  | 8000  | 7.5   | NaN      |  <- phone rows drop in;
+  | 9500  | 6.0   | NaN      |     phone has no calories -> NaN
+  | 10000 | NaN   | 2200     |  <- watch rows follow;
+  | 8500  | NaN   | 2400     |     watch has no sleep -> NaN
+  +-------+-------+----------+
+```
+
+Read it block by block. The two `phone` rows drop straight in, but `phone` has no `calories`, so those cells are filled with `NaN`. The two `watch` rows follow, and since `watch` has no `sleep`, those cells become `NaN`. Every value is copied exactly once, under its matching column name.
+
+So the engine is "line up the labels, then copy each block in once." Notice what it never does: look at the *values* inside the cells. That is the real difference from [merge](merge.md), which matches on values; it is why `concat` lines up by column name or index (not data), and why it can take a whole list of tables at once while merge joins exactly two.
 
 **Mixing dtypes promotes the column.** When stacked columns hold different types, pandas picks one type that can hold them all. Stacking an integer column under a float column gives `float64`:
 
@@ -221,10 +249,10 @@ pd.concat([a, c], ignore_index=True)["x"].dtype
 
 The float case is the same upcasting rule you saw with missing values and merge, just triggered by combining columns. See [data types](../foundations/dtypes.md).
 
-**Never concat inside a loop.** This is the performance mistake that most often slows real code. Each `concat` builds a brand-new table and copies all the data gathered so far, so growing a table one piece at a time copies the early rows again and again:
+**Never concat inside a loop.** This falls straight out of the mechanism above: since each `concat` allocates a new table and copies in everything gathered so far, growing a table one piece at a time re-copies the early rows again and again. It is the performance mistake that most often slows real pandas code:
 
 ```python
-# SLOW: re-copies everything on every pass, cost grows with the square of the count
+# SLOW: re-copies everything collected so far on every pass
 result = pd.DataFrame()
 for file in files:
     result = pd.concat([result, pd.read_csv(file)])
@@ -250,7 +278,7 @@ The first version copies `1 + 2 + 3 + ... + n` rows of data; the second copies e
 !!! warning "Don't grow a table by concatenating in a loop"
     Repeated `concat` in a loop re-copies the data every pass and gets slow as the table grows. Collect the pieces in a list and concat once at the end.
 
-!!! warning "Reach for concat, not merge, to stack same-shape data"
+!!! warning "Use concat, not merge, to stack same-shape data"
     If the tables share a schema and you just want them together, that is `concat`. Use [merge](merge.md) only when you are matching rows on a shared **key** column.
 
 ## Quick reference

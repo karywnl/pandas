@@ -2,7 +2,7 @@
 
 Welcome. This is not another cheat sheet, and it is not the official docs either.
 
-Most pandas resources fall into one of two traps. The beginner ones show you *what* to type but never *why* it works, so the moment something breaks you are stuck. The advanced ones (looking at you, official docs) are technically perfect and completely unwelcoming if you are still finding your feet. This site tries to live in the middle: explain every concept as **what it is, how it works, and why it behaves that way**, with pictures, plain language, and the connections between ideas made obvious instead of left for you to discover the hard way.
+Most pandas resources fall into one of two traps. The beginner ones show you *what* to type but never *why* it works, so the moment something breaks you are stuck. The advanced ones (looking at you, official docs) are technically perfect and completely unwelcoming if you are still learning the basics. This site tries to sit in the middle: explain every concept as **what it is, how it works, and why it behaves that way**, with pictures, plain language, and the connections between ideas made obvious instead of left for you to work out alone.
 
 Think of it like a good friend who happens to know pandas really well, sitting next to you, drawing on a whiteboard.
 
@@ -18,7 +18,7 @@ flowchart LR
     F["Foundations<br/>Series, DataFrames,<br/>reading files, dtypes"] --> SEL["Selecting data<br/>columns, loc/iloc,<br/>boolean"]
     SEL --> IDX["The index<br/>set and reset"]
     IDX --> CLEAN["Cleaning data<br/>missing, dupes,<br/>rename, replace, dtypes"]
-    CLEAN --> GRP["Grouping and reshaping<br/>groupby, multi-level,<br/>aggregate, pivot, crosstab"]
+    CLEAN --> GRP["Grouping and reshaping<br/>groupby, multi-level, aggregate,<br/>pivot, crosstab, melt"]
     SEL --> CLEAN
     CLEAN --> COMB["Combining data<br/>merge on keys,<br/>concat by position"]
     COMB --> GRP
