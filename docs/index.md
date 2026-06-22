@@ -22,12 +22,15 @@ flowchart LR
     SEL --> CLEAN
     CLEAN --> COMB["Combining data<br/>merge on keys,<br/>concat by position"]
     COMB --> GRP
+    GRP --> TRANS["Transforming data<br/>apply custom functions,<br/>vectorize first"]
+    SEL --> TRANS
     style F fill:#5e35b1,color:#fff
     style SEL fill:#5e35b1,color:#fff
     style IDX fill:#5e35b1,color:#fff
     style CLEAN fill:#5e35b1,color:#fff
-    style GRP fill:#7e57c2,color:#fff,stroke:#fff,stroke-width:3px
+    style GRP fill:#5e35b1,color:#fff
     style COMB fill:#5e35b1,color:#fff
+    style TRANS fill:#7e57c2,color:#fff,stroke:#fff,stroke-width:3px
 ```
 
 Start at **Foundations** to learn what a Series and a DataFrame even are, move through **Selecting** and **Cleaning**, **combine** separate tables with merge, and finish with **Grouping**, where you answer real "per category" questions. Each chapter ends by linking to the ones it leans on, so you can follow the threads in any direction. The highlighted node is the newest chapter.

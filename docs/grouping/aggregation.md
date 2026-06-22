@@ -106,6 +106,7 @@ sales.groupby("region").filter(lambda g: len(g) > 2)
     - It builds directly on [GroupBy](groupby.md), the split-apply-combine basics.
     - `transform` is the engine behind group-aware [missing-value filling](../cleaning/missing-values.md) (fill each group with its own median).
     - Aggregating across two keys and reshaping into a grid is [pivot tables](pivot.md).
+    - When a group needs custom logic that `agg` and `transform` cannot express, the flexible (and slower) fallback is [`apply` with a custom function](../transforming/apply.md).
 
 !!! intuition "If you remember one thing"
     Use named `agg` for clean summary tables, `transform` when you need the group statistic on every original row, and `filter` to keep or drop whole groups. Prefer built-in functions for speed.

@@ -108,3 +108,5 @@ nav:
   - Combining data:
       - Merge DataFrames: combining/merge.md
       - Concatenate DataFrames: combining/concat.md
+  - Transforming data:
+      - Apply custom functions: transforming/apply.md
