@@ -15,7 +15,7 @@ Pandas looks like a hundred unrelated methods. It is really a handful of ideas t
 
 ```mermaid
 flowchart LR
-    F["Foundations<br/>Series, DataFrames,<br/>reading files, dtypes"] --> SEL["Selecting data<br/>columns, loc/iloc,<br/>boolean"]
+    F["Foundations<br/>Series, DataFrames,<br/>reading files, dtypes"] --> SEL["Selecting data<br/>columns, loc/iloc,<br/>boolean, sort"]
     SEL --> IDX["The index<br/>set and reset"]
     IDX --> CLEAN["Cleaning data<br/>missing, dupes,<br/>rename, replace, dtypes"]
     CLEAN --> GRP["Grouping and reshaping<br/>groupby, multi-level, aggregate,<br/>pivot, crosstab, melt, unstack"]
@@ -25,15 +25,15 @@ flowchart LR
     GRP --> TRANS["Transforming data<br/>apply custom functions,<br/>vectorize first"]
     SEL --> TRANS
     style F fill:#5e35b1,color:#fff
-    style SEL fill:#5e35b1,color:#fff
+    style SEL fill:#7e57c2,color:#fff,stroke:#fff,stroke-width:3px
     style IDX fill:#5e35b1,color:#fff
     style CLEAN fill:#5e35b1,color:#fff
     style GRP fill:#5e35b1,color:#fff
     style COMB fill:#5e35b1,color:#fff
-    style TRANS fill:#7e57c2,color:#fff,stroke:#fff,stroke-width:3px
+    style TRANS fill:#5e35b1,color:#fff
 ```
 
-Start at **Foundations** to learn what a Series and a DataFrame even are, move through **Selecting** and **Cleaning**, **combine** separate tables with merge, and finish with **Grouping**, where you answer real "per category" questions. Each chapter ends by linking to the ones it leans on, so you can follow the threads in any direction. The highlighted node is the newest chapter.
+Start at **Foundations** to learn what a Series and a DataFrame even are, then move through **Selecting**, **The index**, and **Cleaning**. **Combine** separate tables with merge and concat, answer real "per category" questions with **Grouping and reshaping**, and finish with **Transforming**, where you run custom functions and learn to vectorize first. Each chapter ends by linking to the ones it leans on, so you can follow the threads in any direction. The highlighted node is the newest chapter.
 
 ## Where to begin
 
@@ -80,5 +80,13 @@ Start at **Foundations** to learn what a Series and a DataFrame even are, move t
     Join two tables on a shared key with merge, or stack same-shape tables together with concat.
 
     [:octicons-arrow-right-24: Merge DataFrames](combining/merge.md)
+
+-   :material-function-variant:{ .lg .middle } **Transforming data**
+
+    ---
+
+    Run your own function over a column, row, or group with apply, and learn when a faster vectorized method does the job instead.
+
+    [:octicons-arrow-right-24: Apply custom functions](transforming/apply.md)
 
 </div>

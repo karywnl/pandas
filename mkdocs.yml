@@ -88,6 +88,7 @@ nav:
       - Selecting multiple columns: selection/multi-column.md
       - loc and iloc: selection/loc-iloc.md
       - Boolean indexing: selection/boolean-indexing.md
+      - Sorting: selection/sorting.md
   - The index:
       - Setting the index: indexing/set-index.md
       - Resetting the index: indexing/reset-index.md

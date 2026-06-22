@@ -164,6 +164,7 @@ Parquet is worth knowing: it stores dtypes inside the file, so you skip the gues
     - Blank cells become `NaN`, so a fresh file usually goes straight to [handling missing values](../cleaning/missing-values.md).
     - `parse_dates` produces the `datetime64` columns you then slice and group, see [setting the index](../indexing/set-index.md) and [changing data types](../cleaning/change-dtypes.md).
     - Right after loading, run the [inspection](attributes.md) workflow to confirm the read did what you expected.
+    - What you get back is a [DataFrame](dataframe.md), so everything you can build by hand applies to a loaded table too.
 
 !!! intuition "If you remember one thing"
     `read_csv` turns a flat text file into a typed table, guessing a type for each column. The guesses are often wrong for identifiers and dates, so pass `dtype` and `parse_dates` to fix them, and write back with `index=False`.

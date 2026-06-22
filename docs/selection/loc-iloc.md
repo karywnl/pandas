@@ -124,7 +124,7 @@ This is the superpower that plain `df[...]` cannot do cleanly. You describe the 
 
 ### The single brackets vs double brackets trick
 
-This trips up everyone once, so let us name it now. One label gives you a Series. A *list* of labels gives you a DataFrame, even if the list has one item.
+This surprises everyone once, so let us name it now. One label gives you a Series. A *list* of labels gives you a DataFrame, even if the list has one item.
 
 ```python
 movies.loc["Parasite"]        # Series (one row laid out vertically)
@@ -299,6 +299,22 @@ Same idea as `loc` and `iloc` (label vs position), just specialised for a single
 ### Why a labelled index is fast
 
 One more reason `loc` is not just convenient but genuinely efficient. When you set a meaningful index, pandas builds a **lookup** behind it that can jump straight to a label's row in a single step, instead of checking the rows one by one. So `movies.loc["Parasite"]` stays close to instant no matter how many rows there are. (That single, fixed cost is what people call a **constant time**, or **O(1)**, lookup.) Compare that with scanning an ordinary column, like `movies[movies["year"] == 2019]`, which has to walk every row to find the matches, so the work grows with the number of rows (an **O(n)** operation). For a handful of movies the difference is invisible. For a few million rows it is the difference between instant and a noticeable pause. This is why setting a good index (a topic of its own) pays off, and `loc` is how you use that speed.
+
+## Gotchas
+
+The "under the hood" section explains each of these in full; here they are in one place as the traps to watch for.
+
+!!! danger "Never assign through chained brackets"
+    `df[mask]["col"] = value` writes into a temporary in-between object, not your real data, so in pandas 3.0 it raises a `ChainedAssignmentError` and changes nothing. Always assign through one accessor: `df.loc[mask, "col"] = value`. See [views, copies, and the famous warning](#views-copies-and-the-famous-warning).
+
+!!! warning "The integer index trap: pick loc or iloc on purpose"
+    When the index is made of integers, `df.loc[2]` means "the row **labelled** 2" while `df.iloc[2]` means "the row in **position** 2", and they can point at different rows. Choose the one that matches what you mean, and do not rely on them agreeing. See [the integer index trap](#the-integer-index-trap).
+
+!!! warning "loc slices include the end, iloc slices do not"
+    `df.loc["a":"c"]` keeps `"c"`, but `df.iloc[0:3]` stops before position 3. Mixing up the two ends is a common off-by-one. See [why loc slices are inclusive but iloc slices are not](#why-loc-slices-are-inclusive-but-iloc-slices-are-not).
+
+!!! warning "One label gives a Series, a list of labels gives a DataFrame"
+    `df.loc[:, "col"]` returns a Series; `df.loc[:, ["col"]]` returns a one-column DataFrame. Reach for the list form when you want to keep a DataFrame.
 
 ## Quick reference
 

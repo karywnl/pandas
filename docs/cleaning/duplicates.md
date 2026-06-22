@@ -109,6 +109,7 @@ After dropping, the index keeps its old numbers and gets gaps, so chain `.reset_
     - The leftover index gaps are fixed by [resetting the index](../indexing/reset-index.md).
     - "One row per key" is closely related to [GroupBy](../grouping/groupby.md), which instead *combines* the rows that share a key.
     - For look-alike but not identical text ("John" vs "john"), normalise first with the tools in [replacing values](replace.md).
+    - To control *which* copy survives, [sort](../selection/sorting.md) first, then `drop_duplicates(keep="last")` keeps the newest.
 
 !!! intuition "If you remember one thing"
     `drop_duplicates` compares whole rows by default. Tell it which columns define a duplicate with `subset`, and sort first when you care which copy survives.

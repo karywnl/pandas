@@ -116,6 +116,7 @@ This is why downcasting wide numeric tables and converting low-variety text to `
     - Wrong types are fixed in [changing data types](../cleaning/change-dtypes.md), with `astype`, `to_numeric`, and `to_datetime`.
     - The missing-value upcast is the bridge to [handling missing values](../cleaning/missing-values.md).
     - `dtypes` is step three of the [inspection workflow](attributes.md), and often the first hint that something is off.
+    - These types are first guessed as a file loads, see [reading and writing data](reading-data.md), where `dtype=` lets you override a wrong guess at the door.
 
 !!! intuition "If you remember one thing"
     The dtype is the contract for a column. Numbers are `int64`/`float64`, text is `str` in pandas 3.0, and `object` now means "mixed, investigate". A stray missing value turns integers into floats, so check your types early.

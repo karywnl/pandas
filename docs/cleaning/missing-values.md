@@ -125,6 +125,7 @@ That is usually what you want, but `sum()` quietly skipping holes can mislead. P
     - Filtering [silently drops `NaN`](../selection/boolean-indexing.md) because of the same `NaN != NaN` rule.
     - Group-aware filling (fill each group with its own median) uses `transform`, covered in [aggregation](../grouping/aggregation.md).
     - A [merge](../combining/merge.md) creates fresh `NaN` for unmatched rows, so a `how="left"` merge plus `isna()` is the standard way to find rows with no partner.
+    - Removing repeated rows is the sibling cleaning step, [dropping duplicates](duplicates.md).
 
 !!! intuition "If you remember one thing"
     Three moves: find with `isna`, drop with `dropna`, fill with `fillna` or `interpolate`. Use `interpolate` for ordered data, and always look at the pattern of holes before patching them.

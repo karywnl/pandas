@@ -109,6 +109,7 @@ The **speed order** is just these mechanisms ranked: dict `map` (one lookup) is 
     - `where` and `mask` are condition-driven, the same boolean logic as [boolean indexing](../selection/boolean-indexing.md).
     - Cleaning currency and code strings is the first half of [changing data types](change-dtypes.md), where you then convert the cleaned text to numbers.
     - For custom element-wise logic that no built-in covers, the general (slower) tool is [`apply`](../transforming/apply.md); `map` and `replace` are the faster choices when they fit.
+    - Fixing the column *names* rather than their values is a different job, [renaming columns](rename.md).
 
 !!! intuition "If you remember one thing"
     `replace` keeps what you do not mention, `map` blanks it. `where` keeps where true, `mask` replaces where true. And `clip` is the quick way to bound a range.
