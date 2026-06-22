@@ -16,6 +16,12 @@ emp = pd.DataFrame({
     "salary": [95000, 72000, 88000],
     "remote": [True, False, True],
 })
+
+emp
+#    name   dept  salary  remote
+# 0   Ana    Eng   95000    True
+# 1   Ben  Sales   72000   False
+# 2  Cara    Eng   88000    True
 ```
 
 ## How it works
@@ -32,11 +38,20 @@ Because it is a Series, every Series method is right there: `.mean()`, `.value_c
 ### Single vs double brackets
 
 ```python
-emp["name"]      # Series  (one column, laid out vertically)
-emp[["name"]]    # DataFrame (still a table, one column wide)
+emp["name"]      # Series: one column, laid out vertically
+# 0     Ana
+# 1     Ben
+# 2    Cara
+# Name: name, dtype: str
+
+emp[["name"]]    # DataFrame: still a table, one column wide
+#    name
+# 0   Ana
+# 1   Ben
+# 2  Cara
 ```
 
-Pass a **string** and you get a Series. Pass a **list** and you get a DataFrame, even with one item in the list. Some operations expect a table, not a Series, so this is a real distinction, not a style choice.
+Look at the two printouts: the Series is a bare run of values with a `Name:`/`dtype:` footer, while the double-bracket version keeps the boxed table shape with a column header on top. Pass a **string** and you get a Series; pass a **list** and you get a DataFrame, even with one item in the list. Some operations expect a table, not a Series, so this is a real distinction, not a style choice.
 
 **In one line:** string gives a Series, list gives a DataFrame.
 

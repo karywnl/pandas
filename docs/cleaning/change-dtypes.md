@@ -15,7 +15,15 @@ df = pd.DataFrame({
     "date":  ["2024-01-05", "2024-02-10"],
     "qty":   ["10", "20"],
 })
+
+df.dtypes
+# price    str
+# date     str
+# qty      str
+# dtype: object
 ```
+
+Every column is `str`. The prices carry `$` and commas, the dates are plain text, and even `qty` (clean digits) is text, so none of them can be summed, sorted as numbers, or treated as dates yet. Fixing that is this chapter.
 
 ## How it works
 

@@ -65,8 +65,13 @@ mask = movies["rating"] > 8.6
 
 ```python
 movies[mask]
-# keeps The Matrix, The Dark Knight, Inception
+#              title  year  rating   genre
+# 0       The Matrix  1999     8.7  Sci-Fi
+# 1  The Dark Knight  2008     9.0  Action
+# 4        Inception  2010     8.8  Sci-Fi
 ```
+
+Only the three `True` rows come back, and they keep their original labels (`0`, `1`, `4`), the gap at `2` and `3` is the dropped rows.
 
 Most of the time you skip the variable and write it in one line: `movies[movies["rating"] > 8.6]`.
 
@@ -174,7 +179,7 @@ Three things are worth understanding deeply here: why this is so fast, why the o
 
 ### Why it is fast: vectorization
 
-When you write `movies["rating"] > 8.6`, pandas does not loop in Python. The rating column is stored as one tight block of numbers (a NumPy array), and the comparison runs as a single operation in compiled C code that walks the whole block at once. This is called **vectorization**. A Python loop makes the interpreter do a little extra work on every single element; the vectorized version pays that cost only once. On a million rows the vectorized check finishes almost instantly, while the plain Python loop can take a long time.
+When you write `movies["rating"] > 8.6`, pandas does not loop in Python. The rating column is stored as one tight block of numbers (a NumPy array), and the comparison runs in compiled C code that walks the block value by value, doing one cheap numeric comparison per value with no Python work in between. This is called **vectorization**. The loop does not disappear and the values are not compared at the same instant; the loop has just moved out of Python and down into C, where each step costs almost nothing. A Python loop, by contrast, makes the interpreter do real work on every single element (check its type, pick the right operation, wrap the result back into an object), and that per-element cost is what piles up. On a million rows the vectorized check finishes almost instantly, while the plain Python loop can take a long time.
 
 The mask it produces is cheap too: one byte per row. A million-row mask is about a megabyte, so combining and reusing masks costs almost nothing.
 

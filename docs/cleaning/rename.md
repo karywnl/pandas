@@ -11,6 +11,9 @@ Raw data arrives with awful column names: `"First Name"`, `"AGE "` with a traili
 import pandas as pd
 
 df = pd.DataFrame({"First Name": ["Ana"], "AGE ": [25]})
+
+df.columns
+# Index(['First Name', 'AGE '], dtype='str')   <- a space inside one, a trailing space on the other
 ```
 
 ## How it works
@@ -32,10 +35,11 @@ Because `df.columns` is an Index, it has a `.str` accessor, so you can transform
 
 ```python
 df.columns = df.columns.str.strip().str.lower().str.replace(" ", "_")
-# "First Name" -> "first_name",  "AGE " -> "age"
+df.columns
+# Index(['first_name', 'age'], dtype='str')
 ```
 
-This is the main tool for cleaning a whole messy header row: trim whitespace, lowercase, turn spaces into underscores.
+Both names are fixed in one line: `"First Name"` became `first_name` and `"AGE "` lost its trailing space and became `age`. This is the main tool for cleaning a whole messy header row: trim whitespace, lowercase, turn spaces into underscores.
 
 ### Other useful operations
 

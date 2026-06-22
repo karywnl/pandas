@@ -31,7 +31,7 @@ products.dtypes
 | `float64` | decimals | the only common type that holds `NaN` |
 | `bool` | True / False | one byte each |
 | `str` | text | the default for text in **pandas 3.0** |
-| `datetime64[ns]` | timestamps | made by `pd.to_datetime` |
+| `datetime64` | timestamps | made by `pd.to_datetime` (`[us]` by default in pandas 3.0) |
 | `category` | repeated labels | huge memory win for low-variety text |
 | `object` | anything | holds any type, and a warning sign |
 

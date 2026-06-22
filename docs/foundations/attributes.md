@@ -16,7 +16,16 @@ customers = pd.DataFrame({
     "city":  ["NYC", "LA", "NYC", "SF"],
     "spend": [120.0, 80.0, 200.0, 50.0],
 })
+
+customers
+#    name   age city  spend
+# 0   Ana  25.0  NYC  120.0
+# 1   Ben   NaN   LA   80.0
+# 2  Cara  41.0  NYC  200.0
+# 3   Dan  33.0   SF   50.0
 ```
+
+Already one clue is visible: `age` prints `25.0` and a `NaN`, not whole numbers, which is the first hint that a value is missing. The checks below turn hints like that into facts.
 
 ## The six-step check
 
@@ -61,13 +70,17 @@ Look at `age`. You gave it whole numbers, yet it is `float64`, not `int64`. That
 
 ```python
 customers.info()
+# <class 'pandas.DataFrame'>
 # RangeIndex: 4 entries, 0 to 3
 # Data columns (total 4 columns):
 #  #   Column  Non-Null Count  Dtype
+# ---  ------  --------------  -----
 #  0   name    4 non-null      str
 #  1   age     3 non-null      float64    <- 3 of 4, one is missing
 #  2   city    4 non-null      str
 #  3   spend   4 non-null      float64
+# dtypes: float64(2), str(2)
+# memory usage: 260.0 bytes
 ```
 
 The **Non-Null Count** is the key information here. `age` shows `3 non-null` out of 4 rows, so exactly one value is missing, and you knew it instantly.
@@ -76,16 +89,18 @@ The **Non-Null Count** is the key information here. `age` shows `3 non-null` out
 
 ```python
 customers.describe()
-#         age   spend
-# count   3.0     4.0
-# mean   33.0   112.5
-# std     8.0    65.0
-# min    25.0    50.0
-# 50%    33.0   100.0
-# max    41.0   200.0
+#         age  spend
+# count   3.0    4.0
+# mean   33.0  112.5
+# std     8.0   65.0
+# min    25.0   50.0
+# 25%    29.0   72.5
+# 50%    33.0  100.0
+# 75%    37.0  140.0
+# max    41.0  200.0
 ```
 
-By default it summarises only numeric columns. Note `count` for `age` is 3, not 4: `describe` skips the missing value too. Pass `include="all"` to summarise text columns as well.
+By default it summarises only numeric columns. The `25%`, `50%`, and `75%` rows are the quartiles (the 50% row is the median). Note `count` for `age` is 3, not 4: `describe` skips the missing value too. Pass `include="all"` to summarise text columns as well.
 
 ??? question "Quick check: read the clue"
     You load a table and `dtypes` shows an `age` column as `float64`, even though ages are whole numbers. What does that almost certainly mean?

@@ -78,7 +78,7 @@ by_pair
 # Name: salary, dtype: float64
 ```
 
-This is still a Series, but its index now has **two levels**, `department` and `seniority`. The blank cells under `Engineering` are not missing data; pandas just hides the repeated outer label so the hierarchy is easy to read. (The values are floats because `mean` always returns floats.)
+This is still a Series, but its index now has **two levels**, `department` and `seniority`. The blank cells under `Engineering` are not missing data; pandas just hides the repeated outer label so the hierarchy is easy to read. (The values are floats because averaging integers gives a float.)
 
 **In one line:** a list of keys in, a MultiIndex out, one entry per existing combination.
 

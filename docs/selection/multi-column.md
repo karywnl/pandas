@@ -23,11 +23,14 @@ emp = pd.DataFrame({
 ### List selection (also reorders)
 
 ```python
-emp[["name", "salary"]]            # just these two columns
-emp[["salary", "name", "dept"]]    # same data, new column order
+emp[["salary", "name", "dept"]]    # pick three columns, in this order
+#    salary  name   dept
+# 0   95000   Ana    Eng
+# 1   72000   Ben  Sales
+# 2   88000  Cara    Eng
 ```
 
-The result follows the order of *your* list, not the original table. That makes selection a quick way to reorder columns as a side effect.
+The result follows the order of *your* list, not the original table (here `salary` comes first, even though it was third). That makes selection a quick way to reorder columns as a side effect.
 
 You can build the list programmatically, which is the real power in pipelines:
 
@@ -71,10 +74,10 @@ emp.drop(columns=["remote"])      # everything except remote
 
 ```python
 emp.reindex(columns=["name", "salary", "bonus"], fill_value=0)
-#  name  salary  bonus
-#   Ana   95000      0      <- 'bonus' did not exist, created and filled with 0
-#   Ben   72000      0
-#  Cara   88000      0
+#    name  salary  bonus
+# 0   Ana   95000      0      <- 'bonus' did not exist, created and filled with 0
+# 1   Ben   72000      0
+# 2  Cara   88000      0
 ```
 
 ## Under the hood

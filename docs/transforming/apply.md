@@ -1,7 +1,7 @@
 # apply: custom functions
 
 !!! intuition "The gist"
-    `apply()` runs **your own Python function** over a Series, a DataFrame, or the groups of a GroupBy. It is the fallback for logic that the built-in vectorized methods cannot express. It is also slow, because it calls your function once per value (or per row, or per group) instead of working on the whole column at once. So the rule is: reach for a vectorized method first, and use `apply()` only when there is no vectorized way.
+    `apply()` runs **your own Python function** over a Series, a DataFrame, or the groups of a GroupBy. It is the fallback for logic that the built-in vectorized methods cannot express. It is also slow, because it calls your function once per value (or per row, or per group) instead of letting fast compiled code do the work over the whole column. So the rule is: reach for a vectorized method first, and use `apply()` only when there is no vectorized way.
 
 ## Why it exists
 
@@ -27,29 +27,43 @@ emp
 # 3   Dan Cole  Engineering   80000       0.10
 ```
 
-The thing to remember from the start: `apply()` is powerful but it is the **last** tool to reach for, not the first. Most `apply()` calls in real code should have been a vectorized expression. We will show the fast alternatives as we go.
+Keep one thing in mind throughout: `apply()` is the **last** tool to reach for, not the first, and we show the faster alternative beside each use.
 
 ## Picture it
 
-`apply()` takes your function and calls it once for each value. A vectorized operation does the same job in a single compiled step over the whole column, with no per-value Python call. That difference is why one is slow and the other is fast.
+`apply()` takes your function and calls it once for each value. A vectorized operation walks the values too, but down in compiled C and without ever calling back into Python. That difference is why one is slow and the other is fast.
 
 ```text
 df["salary"].apply(f)                 df["salary"] >= 70000
-one Python call per value             one compiled step over all values
+one Python call per value             a fast C loop, no Python calls
 
   salary                                salary
   +-------+                             +-------+
-  | 50000 | --> f(50000) --> "low"      | 50000 |
-  | 60000 | --> f(60000) --> "low"      | 60000 |   compared all at once,
-  | 90000 | --> f(90000) --> "high"     | 90000 |   inside C, in one shot
-  | 80000 | --> f(80000) --> "high"     | 80000 |
+  | 50000 | --> f(50000) --> "low"      | 50000 | -.
+  | 60000 | --> f(60000) --> "low"      | 60000 |  |  looped over in C:
+  | 90000 | --> f(90000) --> "high"     | 90000 |  |  cheap per value,
+  | 80000 | --> f(80000) --> "high"     | 80000 | -'  no Python
   +-------+                             +-------+
   4 calls into Python                   0 calls into Python
 ```
 
-Read across the two sides: on the left, pandas hands each value to your Python function and waits for the answer, four separate times. On the right, the comparison happens once over the entire block of numbers. **In one line:** `apply()` loops your function over the data one piece at a time; vectorized methods transform the whole column in a single step.
+Both sides go value by value. The difference is what each step costs: on the left, pandas hands each value to your Python function and waits for the answer, four separate times. On the right, the comparison still runs over each number in turn, but as a fast loop down in C with no call back into Python for any value.
+
+Why is each C step so much cheaper? Python is **interpreted**: for every value it stops to check the type, pick the right version of the operation, and wrap the answer back into an object, a small cost paid again and again. Compiled C code (the layer beneath pandas) was told the column's type once, so it just does the bare arithmetic with none of that per-value checking. So **vectorized does not mean every value at the same instant**: the loop is still there, it has only moved out of Python and down into C, where each step is tiny. (The full mechanism is under the hood.)
+
+**In one line:** both loop over the values, but `apply()` runs the loop in slow interpreted Python (a heavy step per value), while vectorized methods run the same loop down in fast compiled C (a tiny step per value).
 
 ## How it works
+
+The examples below all use the same `emp` table:
+
+```text
+   full_name   department  salary  bonus_pct
+0     Ana Ng        Sales   50000       0.10
+1    Ben Lee        Sales   60000       0.15
+2  Cara Diaz  Engineering   90000       0.20
+3   Dan Cole  Engineering   80000       0.10
+```
 
 ### apply on a Series
 
@@ -127,7 +141,7 @@ emp["salary"] * emp["bonus_pct"]
 # dtype: float64
 ```
 
-Same numbers, but this runs as one compiled operation instead of one Python call per row. For the "high or low" label, [`np.where`](../selection/boolean-indexing.md) does a two-way choice over the whole column:
+Same numbers, but this runs as one compiled operation instead of one Python call per row. For the "high or low" label, `np.where` does a two-way choice over the whole column:
 
 ```python
 np.where(emp["salary"] >= 70000, "high", "low")
@@ -152,18 +166,18 @@ These vectorized forms are typically many times faster than the matching `apply(
 
 ### When apply really is the right tool
 
-`apply()` is the right tool when no vectorized method fits. Common honest cases:
+Sometimes there really is no built-in for the job, and those are the moments `apply()` is the right call. A few you will actually meet:
 
-- **Parsing that the [`.str` tools](../cleaning/replace.md) cannot express**, like logic that depends on the parts of a split in a non-uniform way.
-- **A function that mixes several columns in a complicated way**, beyond simple arithmetic.
-- **Calling another library that only accepts one value at a time** (it has no array version to vectorize against).
-- **Many-branch logic** that `np.where` (two outcomes) or `np.select` (a flat list of conditions) cannot lay out cleanly.
+- **Fiddly text parsing** the [`.str` tools](../cleaning/strings.md) cannot handle, where you have to pull each value apart and decide what to keep case by case.
+- **A calculation that ties several columns together** in a way that is more than simple arithmetic.
+- **Handing each value to another library** that only knows how to take one at a time, so there is nothing to vectorize against.
+- **Several layers of if/else** that `np.where` (one yes/no) or `np.select` (a flat list of conditions) cannot lay out cleanly.
 
-In these cases the per-value cost is unavoidable, so `apply()` is the readable choice.
+In all of these the per-value cost is unavoidable anyway, so here `apply()` is not a shortcut, it is genuinely the clearest tool. Use it without guilt.
 
 ### Returning several columns at once
 
-If your function returns a **Series**, `apply()` lines those up into multiple columns. This is the clean way to split one column into many, for example a full name into first and last:
+Here is a handy move: if your function returns a **Series**, `apply()` turns each one into a row, which lets you split a single column into several. The classic example is breaking a full name into a first and last name:
 
 ```python
 emp["full_name"].apply(lambda s: pd.Series({"first": s.split()[0], "last": s.split()[-1]}))
@@ -174,22 +188,21 @@ emp["full_name"].apply(lambda s: pd.Series({"first": s.split()[0], "last": s.spl
 # 3   Dan  Cole
 ```
 
-Each returned `pd.Series` becomes a row, and its keys become the column names. You can then assign it straight into new columns with `emp[["first", "last"]] = ...`. There is also `result_type="expand"` for the same idea when the function returns a plain list:
-
-```python
-emp.apply(lambda row: [row["salary"], row["bonus_pct"] * 100], axis=1, result_type="expand")
-#          0     1
-# 0  50000.0  10.0
-# 1  60000.0  15.0
-# 2  90000.0  20.0
-# 3  80000.0  10.0
-```
-
-`result_type="expand"` spreads the returned list into separate columns instead of keeping it as one column of lists.
+Notice how the keys you chose (`first`, `last`) turned into the new column headers. From here you just save them back onto the table with `emp[["first", "last"]] = ...`. (Prefer to return a plain **list** rather than a Series? Add `result_type="expand"` and it spreads into columns just the same.)
 
 ### apply with GroupBy
 
-On a [GroupBy](../grouping/groupby.md), `apply()` hands your function **each group as a DataFrame**. It is the most flexible GroupBy tool: the function can return a single number, a Series, or a whole DataFrame. Return one number per group and you get a summary, like [aggregation](../grouping/aggregation.md):
+On a [GroupBy](../grouping/groupby.md), `apply()` hands your function **each group as a DataFrame**. It is the most flexible GroupBy tool: the function can return a single number, a Series, or a whole DataFrame. Return one number per group and you get a summary, like [aggregation](../grouping/aggregation.md).
+
+Here is `emp` once more, since the next examples group it by `department`:
+
+```text
+   full_name   department  salary  bonus_pct
+0     Ana Ng        Sales   50000       0.10
+1    Ben Lee        Sales   60000       0.15
+2  Cara Diaz  Engineering   90000       0.20
+3   Dan Cole  Engineering   80000       0.10
+```
 
 ```python
 emp.groupby("department").apply(lambda g: g["salary"].max() - g["salary"].min())
@@ -269,11 +282,6 @@ For the specific case of parsing numbers, you do not need `apply` at all: [`pd.t
 
 **Why `apply` is slow: it crosses into Python for every call.** A vectorized operation like `salary >= 70000` runs a single loop written in compiled C over the whole block of numbers, never stopping to run Python. `apply` cannot do that, because your function *is* Python. For a Series, pandas runs a routine (`lib.map_infer`) that loops over the values and calls your Python function on each one. The loop itself is compiled, but every call hands control back to the slow Python interpreter and waits for the result. That hand-off, paid once per value, is the cost. So the speed gap is not that pandas loops and you do not; it is that the vectorized path **never enters Python per value** while `apply` enters it every time. This is the other side of the [vectorization](../selection/boolean-indexing.md) that makes filters fast.
 
-```text
-vectorized:   [ one compiled loop over the whole array ]      no Python per value
-apply:        value -> [Python] -> value -> [Python] -> ...   one Python call each
-```
-
 **Why `axis=1` is slower than `axis=0`.** When you apply across rows, pandas builds a **temporary Series object for each row** and passes it to your function (in the code, a generator yields one row Series at a time, and the function is called on each). Building those row Series is extra work on top of the per-call cost. It also does not fit how a DataFrame is stored: columns are kept as separate blocks of memory ([the BlockManager](../selection/loc-iloc.md#views-copies-and-the-famous-warning)), so assembling one row means reaching into every column block to collect a single value from each. Going column by column (`axis=0`) reads each block straight through, which is why it is the cheaper direction.
 
 **What `raw=True` saves.** Passing `raw=True` tells `apply` to hand your function the raw NumPy array of each column or row instead of building a Series around it. pandas takes a separate code path that skips the Series construction entirely. It is faster, but your function then cannot use index or column labels, only the bare numbers, so it only works when your logic does not need them.
@@ -321,7 +329,7 @@ For functions heavy enough that even this matters, compiling the inner function 
 !!! connect "The general fallback, and what to use instead"
     - `apply` is the slow, general fallback for [vectorization](../selection/boolean-indexing.md): vectorized methods never enter Python per value, which is exactly the speed `apply` gives up.
     - On a Series, `apply` for a function is the same as [`map`](../cleaning/replace.md); for value swaps and dictionary lookups, `map` and [`replace`](../cleaning/replace.md) are the cleaner tools.
-    - For two-way or multi-way labelling, prefer [`np.where`](../selection/boolean-indexing.md), `np.select`, or `pd.cut`; for type-safe number parsing, [`to_numeric`](../cleaning/change-dtypes.md).
+    - For two-way or multi-way labelling, prefer `np.where`, `np.select`, or `pd.cut`; for type-safe number parsing, [`to_numeric`](../cleaning/change-dtypes.md).
     - On a [GroupBy](../grouping/groupby.md), `apply` is the flexible cousin of [`agg` and `transform`](../grouping/aggregation.md); use those first and `apply` only when neither fits.
     - The reason `axis=1` is slow is the column-major [BlockManager](../selection/loc-iloc.md#views-copies-and-the-famous-warning) storage, the same layout that makes column work cheap.
 

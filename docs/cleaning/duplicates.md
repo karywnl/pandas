@@ -14,7 +14,15 @@ signups = pd.DataFrame({
     "email": ["a@x.com", "b@x.com", "a@x.com"],
     "ts":    [1, 2, 3],
 })
+
+signups
+#      email  ts
+# 0  a@x.com   1
+# 1  b@x.com   2
+# 2  a@x.com   3
 ```
+
+The same email (`a@x.com`) shows up in rows 0 and 2, but their `ts` differs (1 vs 3). Keep that in mind, it decides what counts as a duplicate below.
 
 ## How it works
 

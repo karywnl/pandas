@@ -16,6 +16,14 @@ sales = pd.DataFrame({
     "units":   [10, 5, 8, 12, 7],
     "revenue": [100, 60, 80, 130, 70],
 })
+
+sales
+#   region product  units  revenue
+# 0   East       A     10      100
+# 1   East       B      5       60
+# 2   West       A      8       80
+# 3   West       B     12      130
+# 4   East       A      7       70
 ```
 
 ## How it works

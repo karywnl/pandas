@@ -21,13 +21,14 @@ orders = orders.set_index("order_id")
 
 The `order_id` column is now the row label, and it has left the columns:
 
-```text
-            customer  amount
-order_id
-   101      Ana          250
-   102      Ben           80
-   103      Ana          120     <- orders.loc[103]
-   104      Cara         300
+```python
+orders
+#          customer  amount
+# order_id
+# 101           Ana     250
+# 102           Ben      80
+# 103           Ana     120     <- orders.loc[103]
+# 104          Cara     300
 ```
 
 ## How it works

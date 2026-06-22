@@ -17,6 +17,18 @@ sales = pd.DataFrame({
     "revenue": [100, 60, 80, 130, 70],
 })
 
+sales
+#   region product  units  revenue
+# 0   East       A     10      100
+# 1   East       B      5       60
+# 2   West       A      8       80
+# 3   West       B     12      130
+# 4   East       A      7       70
+```
+
+Three of the five rows are East, two are West. "Total revenue per region" should therefore add the three East numbers (100 + 60 + 70) into one and the two West numbers (80 + 130) into another:
+
+```python
 sales.groupby("region")["revenue"].sum()
 # region
 # East    230

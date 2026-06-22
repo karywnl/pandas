@@ -19,12 +19,21 @@ visitors = pd.DataFrame({"day": range(1, 101), "count": range(100, 200)})
 
 ```python
 visitors.head()      # first 5 rows (the default)
-visitors.head(10)    # first 10 rows
-visitors.tail()      # last 5 rows
+#    day  count
+# 0    1    100
+# 1    2    101
+# 2    3    102
+# 3    4    103
+# 4    5    104
+
 visitors.tail(3)     # last 3 rows
+#     day  count
+# 97   98    197
+# 98   99    198
+# 99  100    199
 ```
 
-`head` counts from the top, `tail` counts from the bottom. Both return a **DataFrame**, and both keep the original row labels.
+`head` counts from the top, `tail` counts from the bottom. Pass a number for how many rows you want (`head(10)`, `tail(3)`), or leave it blank for the default 5. Both return a **DataFrame**, and both keep the **original** row labels: notice `tail(3)` shows labels `97, 98, 99`, not a fresh `0, 1, 2`.
 
 **In one line:** `head` peeks at the start, `tail` peeks at the end, default 5 of each.
 

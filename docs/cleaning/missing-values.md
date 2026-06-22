@@ -15,7 +15,16 @@ readings = pd.DataFrame({
     "temp":  [20.0, np.nan, np.nan, 24.0],
     "humid": [55.0, 57.0, np.nan, 60.0],
 })
+
+readings
+#    time  temp  humid
+# 0   9am  20.0   55.0
+# 1  10am   NaN   57.0
+# 2  11am   NaN    NaN
+# 3  12pm  24.0   60.0
 ```
+
+The holes show up as `NaN`: `temp` is missing at 10am and 11am, `humid` at 11am. The whole job is deciding what to do about those cells.
 
 ## Find: how much is missing
 

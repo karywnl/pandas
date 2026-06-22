@@ -5,7 +5,7 @@
 
 ## Why it exists
 
-Most data is a table: a row per thing, a column per attribute. The DataFrame is pandas' table, and the fastest way to create one is column by column, because that matches how pandas stores data internally.
+Most data is a table: a row per thing, a column per attribute. The DataFrame is pandas' table. The usual way to make one is to hand pandas a **dictionary**, where each key is a column name and each value is the list of data going down that column.
 
 ```python
 import pandas as pd
@@ -15,9 +15,15 @@ books = pd.DataFrame({
     "year":  [1965, 1949, 1989],
     "price": [9.99, 7.50, 12.00],
 })
+
+books
+#       title  year  price
+# 0      Dune  1965   9.99
+# 1      1984  1949   7.50
+# 2  Hyperion  1989  12.00
 ```
 
-You get a three-column table. The row index defaults to `0, 1, 2`.
+There is your three-column table. pandas put a row **index** down the left (`0, 1, 2`) because you did not supply one, and worked out a type for each column on its own.
 
 ## Picture it
 

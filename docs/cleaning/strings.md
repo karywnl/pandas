@@ -1,7 +1,7 @@
 # String methods (the `.str` accessor)
 
 !!! intuition "The gist"
-    Text columns need text operations: lowercase them, trim spaces, check for a word, split them apart. You cannot call Python's `.lower()` on a whole column directly, so pandas gives you the `.str` accessor, which runs a string operation on **every value at once** and quietly leaves missing values alone. `column.str.lower()`, `column.str.contains("x")`, `column.str.split()`, and so on.
+    Text columns need text operations: lowercase them, trim spaces, check for a word, split them apart. You cannot call Python's `.lower()` on a whole column directly, so pandas gives you the `.str` accessor, which runs a string operation across **every value** of the column and quietly leaves missing values alone. `column.str.lower()`, `column.str.contains("x")`, `column.str.split()`, and so on.
 
 ## Why it exists
 

@@ -16,8 +16,17 @@ orders = pd.DataFrame({
     "order_date": ["2024-01-05", "2024-01-20", "2024-02-10", "2024-02-28", "2024-03-15"],
     "amount": [120, 80, 200, 50, 90],
 })
+
+orders
+#    order_date  amount
+# 0  2024-01-05     120
+# 1  2024-01-20      80
+# 2  2024-02-10     200
+# 3  2024-02-28      50
+# 4  2024-03-15      90
+
 orders["order_date"].dtype
-# dtype('O')    <- still plain text (object), not dates yet
+# str    <- still plain text, not dates yet
 ```
 
 Until that `order_date` column is real datetime, every time-based question is blocked. Converting it is the first move.
@@ -153,7 +162,7 @@ Each row is one month, labelled by its last day, holding that month's total. Use
   "2024-01-05"  --to_datetime-->  a single integer: microseconds since 1970-01-01
   date - date   ->  integer - integer   (a duration, fast)
   date < date   ->  integer < integer   (an instant comparison)
-  .dt.month     ->  arithmetic on that integer, done for the whole column at once
+  .dt.month     ->  arithmetic on that integer, for every value, in fast C
 ```
 
 comparing or subtracting two dates is just comparing or subtracting two integers, which is why it is fast and vectorized, and why `.dt` extractions run over the whole column without a Python loop. Converting text to this integer form once, with `to_datetime`, is what makes all of it possible. This is the datetime side of the [dtypes](../foundations/dtypes.md) story: the right type is what decides what a column can do.
@@ -163,7 +172,7 @@ comparing or subtracting two dates is just comparing or subtracting two integers
 ## Gotchas
 
 !!! danger "Convert before you do anything time-based"
-    On a **text** column, `>=` and sorting compare character by character, so `"2024-02-10"` versus `"2024-1-5"` can order wrongly, and `.dt` does not exist at all. Always `to_datetime` first. A column that looks like dates but has dtype `object` is the usual cause of "my date filter returns the wrong rows".
+    On a **text** column, `>=` and sorting compare character by character, so `"2024-02-10"` versus `"2024-1-5"` can order wrongly, and `.dt` does not exist at all. Always `to_datetime` first. A column that looks like dates but has dtype `str` (plain text) is the usual cause of "my date filter returns the wrong rows".
 
 !!! warning "Use ME/MS, not M (changed in pandas 3.0)"
     The resample/offset code `"M"` was removed; it now raises `ValueError: Invalid frequency: M`. Use `"ME"` (month end) or `"MS"` (month start). Likewise `"Y"` became `"YE"`/`"YS"`.

@@ -14,7 +14,15 @@ survey = pd.DataFrame({
     "gender": ["M", "F", "U"],
     "score":  [1, -1, 2],
 })
+
+survey
+#   gender  score
+# 0      M      1
+# 1      F     -1
+# 2      U      2
 ```
+
+`gender` holds single-letter codes to expand into words, and `score` has a negative value to clip. The tools below fix each kind.
 
 ## How it works
 

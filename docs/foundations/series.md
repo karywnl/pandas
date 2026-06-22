@@ -5,7 +5,7 @@
 
 ## Why it exists
 
-A plain Python list can hold values, but it cannot answer "what was Wednesday's temperature?" without you remembering that Wednesday is position 2. A Series fixes that by attaching a **label** to every value, so you can ask for data by name. It also pins down **one type** for the whole column, which is what makes math fast.
+A plain Python list can hold values, but it cannot answer "what was Wednesday's temperature?" without you remembering that Wednesday is position 2. A Series fixes that by attaching a **label** to every value, so you can ask for data by name instead of by position. It also keeps the whole column to **one type** (all numbers, or all text), so it behaves as one consistent thing. The speed that comes from that matters later; the part you feel first is simply looking things up by name.
 
 Think of a week of temperature readings.
 
@@ -15,7 +15,17 @@ import pandas as pd
 temps = pd.Series([31, 33, 30, 29, 34],
                   index=["Mon", "Tue", "Wed", "Thu", "Fri"],
                   name="temp_c")
+
+temps
+# Mon    31
+# Tue    33
+# Wed    30
+# Thu    29
+# Fri    34
+# Name: temp_c, dtype: int64
 ```
+
+Print it and there is the whole Series: the labels (`Mon`, `Tue`, ...) down the left, the values down the right, and the `name` and `dtype` summarised on the last line. That last line is pandas telling you what the column is called and that every value is a 64-bit integer.
 
 ## Picture it
 
@@ -38,7 +48,7 @@ Two things are *always* there: an **index** and a **dtype**. Even if you never s
 
 ## How it works
 
-Look things up by label, and run whole-column math all at once.
+Look things up by label, and run math over a whole column in one expression.
 
 ```python
 temps["Wed"]        # 30        (lookup by label)
@@ -46,10 +56,10 @@ temps.mean()        # 31.4      (one number for the column)
 temps.max()         # 34
 temps.index         # Index(['Mon', 'Tue', 'Wed', 'Thu', 'Fri'])
 temps.dtype         # int64
-temps + 2           # adds 2 to every value at once (vectorized)
+temps + 2           # adds 2 to every value (vectorized)
 ```
 
-That `temps + 2` adds to all five values without a loop. This is the same vectorization that powers filtering and arithmetic everywhere in pandas.
+That `temps + 2` adds 2 to all five values, and you never wrote a loop to do it. pandas calls this **vectorization**: you write one short expression and pandas applies it across the whole column for you. It is the same idea behind filtering and arithmetic everywhere else in pandas, so it is worth noticing now.
 
 ### Getting the values out
 
