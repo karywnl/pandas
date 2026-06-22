@@ -17,7 +17,7 @@ Pandas looks like a hundred unrelated methods. It is really a handful of ideas t
 flowchart LR
     F["Foundations<br/>Series, DataFrames,<br/>reading files, dtypes"] --> SEL["Selecting data<br/>columns, loc/iloc,<br/>boolean, sort"]
     SEL --> IDX["The index<br/>set and reset"]
-    IDX --> CLEAN["Cleaning data<br/>missing, dupes,<br/>rename, replace, dtypes"]
+    IDX --> CLEAN["Cleaning data<br/>missing, dupes, rename,<br/>replace, strings, dtypes"]
     CLEAN --> GRP["Grouping and reshaping<br/>groupby, multi-level, aggregate,<br/>pivot, crosstab, melt, unstack"]
     SEL --> CLEAN
     CLEAN --> COMB["Combining data<br/>merge on keys,<br/>concat by position"]
@@ -25,9 +25,9 @@ flowchart LR
     GRP --> TRANS["Transforming data<br/>apply custom functions,<br/>vectorize first"]
     SEL --> TRANS
     style F fill:#5e35b1,color:#fff
-    style SEL fill:#7e57c2,color:#fff,stroke:#fff,stroke-width:3px
+    style SEL fill:#5e35b1,color:#fff
     style IDX fill:#5e35b1,color:#fff
-    style CLEAN fill:#5e35b1,color:#fff
+    style CLEAN fill:#7e57c2,color:#fff,stroke:#fff,stroke-width:3px
     style GRP fill:#5e35b1,color:#fff
     style COMB fill:#5e35b1,color:#fff
     style TRANS fill:#5e35b1,color:#fff

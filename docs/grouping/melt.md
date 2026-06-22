@@ -137,7 +137,7 @@ Both `student_id` and `student` are kept on every row, so you never lose track o
 
 ### Cleaning the names after melting
 
-The folded names are just the old column strings, so they often need cleaning. Because the new column is ordinary text, you can use the [string tools](../cleaning/replace.md) on it. For example, remove a repeated `_score` suffix:
+The folded names are just the old column strings, so they often need cleaning. Because the new column is ordinary text, you can use the [string tools](../cleaning/strings.md) on it. For example, remove a repeated `_score` suffix:
 
 ```python
 q = pd.DataFrame({"id": [1], "q1_score": [80], "q2_score": [85]})
@@ -254,7 +254,7 @@ So melt columns that belong together (all scores, all prices), not a mix of unre
     - `melt` is the exact inverse of [pivot tables](pivot.md): melt folds columns down into rows, pivot spreads rows out into columns.
     - The index based version of this reshape is [unstack](unstack.md) (long to wide) and its inverse `stack`: same idea as pivot and melt, but driven by the row index instead of named columns.
     - Long format is what [GroupBy](groupby.md) and [aggregation](aggregation.md) are built for, so melting is often the step that makes a wide table groupable.
-    - Cleaning the folded name column uses [string replacement](../cleaning/replace.md), and moving the pivoted key back to a column uses [resetting the index](../indexing/reset-index.md).
+    - Cleaning the folded name column uses [string methods](../cleaning/strings.md), and moving the pivoted key back to a column uses [resetting the index](../indexing/reset-index.md).
     - Stacking value columns of different types collapses to `object`, the same dtype rule you met in [concatenate](../combining/concat.md).
     - Melt reshapes one table; to combine several tables first, see [merge](../combining/merge.md) and [concat](../combining/concat.md).
 

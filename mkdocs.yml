@@ -97,6 +97,7 @@ nav:
       - Dropping duplicates: cleaning/duplicates.md
       - Renaming columns: cleaning/rename.md
       - Replacing values: cleaning/replace.md
+      - String methods: cleaning/strings.md
       - Changing data types: cleaning/change-dtypes.md
   - Grouping and reshaping:
       - GroupBy: grouping/groupby.md
