@@ -112,3 +112,5 @@ nav:
       - Concatenate DataFrames: combining/concat.md
   - Transforming data:
       - Apply custom functions: transforming/apply.md
+  - Dates and times:
+      - Datetime and the .dt accessor: dates/datetime.md

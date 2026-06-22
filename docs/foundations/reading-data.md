@@ -162,7 +162,7 @@ Parquet is worth knowing: it stores dtypes inside the file, so you skip the gues
 !!! connect "The front door to every other chapter"
     - The type guessing here is the [data types](dtypes.md) inference, happening as the file loads. `dtype=` is how you override it at the door.
     - Blank cells become `NaN`, so a fresh file usually goes straight to [handling missing values](../cleaning/missing-values.md).
-    - `parse_dates` produces the `datetime64` columns you then slice and group, see [setting the index](../indexing/set-index.md) and [changing data types](../cleaning/change-dtypes.md).
+    - `parse_dates` produces the `datetime64` columns you then slice and group, see [dates and times](../dates/datetime.md) and [setting the index](../indexing/set-index.md).
     - Right after loading, run the [inspection](attributes.md) workflow to confirm the read did what you expected.
     - What you get back is a [DataFrame](dataframe.md), so everything you can build by hand applies to a loaded table too.
 

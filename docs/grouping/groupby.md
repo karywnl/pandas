@@ -121,7 +121,7 @@ One scan to number the rows, one scan to total them, both in compiled C, with no
     - Grouping by several keys at once builds a layered, MultiIndex result, covered in [multi-level GroupBy](multi-level-groupby.md).
     - Reshaping a two-key group into a grid is [pivot tables](pivot.md).
     - The key lands in the index, so you often follow up with [resetting the index](../indexing/reset-index.md).
-    - Grouping by a [datetime index](../indexing/set-index.md) is how time-based summaries work.
+    - The time-aware version of grouping is `resample`, which buckets a [datetime index](../dates/datetime.md) into months, weeks, or days.
     - Real analysis often starts by [merging](../combining/merge.md) separate tables into one, then grouping the combined result.
 
 !!! intuition "If you remember one thing"

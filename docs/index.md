@@ -24,13 +24,16 @@ flowchart LR
     COMB --> GRP
     GRP --> TRANS["Transforming data<br/>apply custom functions,<br/>vectorize first"]
     SEL --> TRANS
+    CLEAN --> DT["Dates and times<br/>to_datetime, .dt,<br/>resample"]
+    IDX --> DT
     style F fill:#5e35b1,color:#fff
     style SEL fill:#5e35b1,color:#fff
     style IDX fill:#5e35b1,color:#fff
-    style CLEAN fill:#7e57c2,color:#fff,stroke:#fff,stroke-width:3px
+    style CLEAN fill:#5e35b1,color:#fff
     style GRP fill:#5e35b1,color:#fff
     style COMB fill:#5e35b1,color:#fff
     style TRANS fill:#5e35b1,color:#fff
+    style DT fill:#7e57c2,color:#fff,stroke:#fff,stroke-width:3px
 ```
 
 Start at **Foundations** to learn what a Series and a DataFrame even are, then move through **Selecting**, **The index**, and **Cleaning**. **Combine** separate tables with merge and concat, answer real "per category" questions with **Grouping and reshaping**, and finish with **Transforming**, where you run custom functions and learn to vectorize first. Each chapter ends by linking to the ones it leans on, so you can follow the threads in any direction. The highlighted node is the newest chapter.

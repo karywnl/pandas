@@ -104,7 +104,7 @@ The index also drives **alignment**: arithmetic between two frames matches rows 
     - The inverse, moving the index back to a column, is [resetting the index](reset-index.md).
     - Fast `loc` lookups are the payoff promised back in [loc and iloc](../selection/loc-iloc.md).
     - Alignment by label is the same [Series](../foundations/series.md) behaviour, now driving whole-table arithmetic.
-    - A datetime index is what makes resampling and time grouping possible later in [GroupBy](../grouping/groupby.md).
+    - A datetime index is what makes date slicing and resampling possible, covered in [dates and times](../dates/datetime.md).
     - Duplicate labels make lookups ambiguous and block reshaping, so [dropping duplicates](../cleaning/duplicates.md) first keeps the index unique.
 
 !!! intuition "If you remember one thing"
