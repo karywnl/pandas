@@ -177,10 +177,33 @@ In all of these the per-value cost is unavoidable anyway, so here `apply()` is n
 
 ### Returning several columns at once
 
-Here is a handy move: if your function returns a **Series**, `apply()` turns each one into a row, which lets you split a single column into several. The classic example is breaking a full name into a first and last name:
+This one has a twist, so let us go slowly. In the Series examples above, **each call** of your function returned **one value** (a length, a `"high"`/`"low"` label), and `apply` gathered those values into a Series. The trick for getting several columns is to make **each call** return a whole **Series** instead of a single value.
+
+Here is such a function. Run on its own on a single name, it returns a small Series, just labels paired with values:
 
 ```python
-emp["full_name"].apply(lambda s: pd.Series({"first": s.split()[0], "last": s.split()[-1]}))
+def split_name(s):
+    return pd.Series({"first": s.split()[0], "last": s.split()[-1]})
+
+split_name("Ana Ng")
+# first    Ana
+# last      Ng
+# dtype: str
+```
+
+Run it on all four names and you get four of those little Series, one per name:
+
+```text
+  "Ana Ng"     ->  first=Ana   last=Ng
+  "Ben Lee"    ->  first=Ben   last=Lee
+  "Cara Diaz"  ->  first=Cara  last=Diaz
+  "Dan Cole"   ->  first=Dan   last=Cole
+```
+
+`apply` then stacks those four Series into a table: each Series becomes one **row**, and their shared labels (`first`, `last`) become the two **columns**:
+
+```python
+emp["full_name"].apply(split_name)
 #   first  last
 # 0   Ana    Ng
 # 1   Ben   Lee
@@ -188,7 +211,12 @@ emp["full_name"].apply(lambda s: pd.Series({"first": s.split()[0], "last": s.spl
 # 3   Dan  Cole
 ```
 
-Notice how the keys you chose (`first`, `last`) turned into the new column headers. From here you just save them back onto the table with `emp[["first", "last"]] = ...`. (Prefer to return a plain **list** rather than a Series? Add `result_type="expand"` and it spreads into columns just the same.)
+So a single column of names became a two-column table. To keep those columns, store that result on `emp` by assigning it to two new column names:
+
+```python
+emp[["first", "last"]] = emp["full_name"].apply(split_name)
+# emp now has 'first' and 'last' columns next to the originals
+```
 
 ### apply with GroupBy
 
