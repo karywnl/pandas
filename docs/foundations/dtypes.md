@@ -77,9 +77,11 @@ A million-row column with five distinct values goes from hundreds of megabytes a
 ## Under the hood
 
 !!! tip "New here? You have permission to skip this."
-    Knowing "numbers, text, bool, and watch out for object" is enough to start. This is the memory story behind the advice.
+    Knowing "numbers, text, bool, and watch out for object" is enough to start. This explains *how* a column is stored, which is where the memory costs below come from.
 
-Storage cost per value is very different. Picking the right type is a real cost on big data:
+**How a column is stored.** A typed column is kept as one contiguous block of memory where every value gets the **same fixed number of bytes**, decided by the type. An `int64` reserves 8 bytes for each value; an `int8` reserves 1. This fixed-width layout is also what lets pandas run maths as one fast compiled sweep over the block. An `object` column is the exception and the reason it is so heavy: it does not store the values themselves, but a pointer to a separate Python object for each one, sitting elsewhere in memory.
+
+Because of that layout, storage cost per value is very different, and picking the right type is a real cost on big data:
 
 | Type | Per value | 10M values |
 | --- | --- | --- |

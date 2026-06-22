@@ -67,11 +67,22 @@ This is the whole decision in one line:
 ## Under the hood
 
 !!! tip "New here? You have permission to skip this."
-    Default keeps, `drop=True` discards. That is the core. Here is the naming detail.
+    Default keeps, `drop=True` discards. This explains *what* `reset_index` does to the frame in two steps, which is where the column-naming detail comes from.
 
-`reset_index` names the new column after the index. If the index had a name (say `customer`), you get a `customer` column. If it had **no** name, you get a column literally called `index`, which can clash with the `.index` attribute and confuse later code. Name your index, or rename the result immediately.
+**The two steps it runs.** `reset_index` always does the second step, and the default adds the first:
 
-Doing `set_index` and then `reset_index` brings you back exactly where you started: the column comes back with the same name and type it had before.
+1. **Lift the index out into a column.** It takes the current index labels (`Ana`, `Ben`, `Cara`) and inserts them as a regular column at the front of the frame. To do that it needs a column name, and it uses the index's **name**. With `drop=True`, this step is skipped and the labels are thrown away.
+2. **Install a fresh row index.** It replaces the old index with a brand new default `RangeIndex` (`0, 1, 2, ...`), which is why the row numbers come out clean and gap-free.
+
+```text
+  index   amount            (step 1: index -> column)      (step 2: new RangeIndex)
+  Ana     370                customer  amount                  customer  amount
+  Ben      80      ----->    Ana       370          ----->  0  Ana       370
+  Cara    300                Ben        80                   1  Ben        80
+                             Cara      300                   2  Cara      300
+```
+
+The column-naming behavior falls out of step 1. If the index had a name (`customer`), the new column is called `customer`. If it had **no** name, step 1 still needs one, so it falls back to the literal `index`, which can clash with the `.index` attribute and confuse later code. Name your index, or rename the result, to avoid that. (And because step 1 records the labels faithfully, a `set_index` followed by `reset_index` returns the column with the same name and type it had before.)
 
 ## Gotchas
 

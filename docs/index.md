@@ -18,7 +18,7 @@ flowchart LR
     F["Foundations<br/>Series, DataFrames,<br/>reading files, dtypes"] --> SEL["Selecting data<br/>columns, loc/iloc,<br/>boolean"]
     SEL --> IDX["The index<br/>set and reset"]
     IDX --> CLEAN["Cleaning data<br/>missing, dupes,<br/>rename, replace, dtypes"]
-    CLEAN --> GRP["Grouping and reshaping<br/>groupby, multi-level, aggregate,<br/>pivot, crosstab, melt"]
+    CLEAN --> GRP["Grouping and reshaping<br/>groupby, multi-level, aggregate,<br/>pivot, crosstab, melt, unstack"]
     SEL --> CLEAN
     CLEAN --> COMB["Combining data<br/>merge on keys,<br/>concat by position"]
     COMB --> GRP
@@ -26,8 +26,8 @@ flowchart LR
     style SEL fill:#5e35b1,color:#fff
     style IDX fill:#5e35b1,color:#fff
     style CLEAN fill:#5e35b1,color:#fff
-    style GRP fill:#5e35b1,color:#fff
-    style COMB fill:#7e57c2,color:#fff,stroke:#fff,stroke-width:3px
+    style GRP fill:#7e57c2,color:#fff,stroke:#fff,stroke-width:3px
+    style COMB fill:#5e35b1,color:#fff
 ```
 
 Start at **Foundations** to learn what a Series and a DataFrame even are, move through **Selecting** and **Cleaning**, **combine** separate tables with merge, and finish with **Grouping**, where you answer real "per category" questions. Each chapter ends by linking to the ones it leans on, so you can follow the threads in any direction. The highlighted node is the newest chapter.

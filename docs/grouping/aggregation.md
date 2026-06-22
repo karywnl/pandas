@@ -75,11 +75,11 @@ sales.groupby("region").filter(lambda g: len(g) > 2)
 ## Under the hood
 
 !!! tip "New here? You have permission to skip this."
-    Named `agg`, plus `transform` for shape-preserving features, covers the vast majority of work. Two notes.
+    Named `agg`, plus `transform` for shape-preserving features, covers the vast majority of work. This explains *how* `agg` runs the reduction, which is why a built-in is so much faster and why a list of functions gives two-level columns.
 
-**Built-ins are far faster.** A built-in like `"sum"` processes every group in one C loop. A custom Python lambda is called once per group in the interpreter, which on thousands of groups can be 10 to 100 times slower. Always check for a built-in first.
+**How a built-in differs from a lambda.** After the [GroupBy](groupby.md) has sorted the rows into groups, `agg` has to turn each group's values into one number, and how it does that depends on which function you give it. A built-in like `"sum"` maps to a single routine written in compiled C that runs through all the grouped values in one pass, keeping a running total per group. A custom lambda cannot use that fast path: pandas must slice out each group on its own and call your Python function once for it, and a Python call carries overhead every time. With thousands of groups that becomes thousands of slow calls, which is why a lambda can be 10 to 100 times slower. Always check for a built-in first.
 
-**`agg(["sum", "mean"])` makes MultiIndex columns.** Passing a list of functions produces two-level column headers that are awkward downstream. Named aggregation avoids them entirely, which is the main reason to prefer it.
+**Why a list of functions makes two-level columns.** When you write `agg(["sum", "mean"])`, you are asking for **one output column per (input column, function) pair**. To label both parts, pandas stacks the labels into a two-level (MultiIndex) header like `(revenue, sum)`, which is awkward to select from later. **Named aggregation** sidesteps this by letting you give each output your own flat name (`total_rev=("revenue", "sum")`), which is the main reason to prefer it.
 
 ## Gotchas
 

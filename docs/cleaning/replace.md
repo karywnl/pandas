@@ -67,11 +67,20 @@ survey["score"].clip(lower=0, upper=10)  # squeeze into [0, 10]
 ## Under the hood
 
 !!! tip "New here? You have permission to skip this."
-    The four tools above handle almost everything. Two notes on power and speed.
+    The four tools above handle almost everything. This explains *how* each one processes a column, which is also where their speed differences come from.
 
-**Regex for patterns.** With `regex=True`, `replace` matches patterns, not just exact strings, which is how you strip junk: `df.replace(r"[\$,]", "", regex=True)` removes dollar signs and commas. Without the flag, the pattern is treated literally.
+**How each one works on a value.** All of these walk the column and build a new one, but the work they do per value is different:
 
-**Speed order.** Exact `map` from a dict is fastest (a direct key lookup). Plain `replace` is fast. Regex `replace` is slower (it runs the regex engine per value). A Python `apply(lambda ...)` is slowest of all, so use the vectorised options first.
+- **`map`** does a **dictionary lookup**. For each value it looks the value up as a key in your dict and writes whatever it finds; a value that is not a key becomes `NaN`. A dictionary lookup is a single direct jump to the answer, so this is the cheapest per value.
+- **`replace`** does a **match-and-substitute**. For each value it checks whether the value is one of the targets you named, and if so swaps it; everything else passes through unchanged. With `regex=True` the check is no longer "is this value equal to a target" but "does a search pattern match", so it runs the regex engine on every value. That pattern engine is real work per value, which is why regex `replace` is slower than plain `replace`.
+
+```python
+survey.replace(r"[\$,]", "", regex=True)   # pattern match per value: strips $ and ,
+```
+
+Without `regex=True` the pattern is treated as a literal string to match exactly.
+
+The **speed order** is just these mechanisms ranked: dict `map` (one lookup) is fastest, plain `replace` (compare to the targets) is close behind, regex `replace` (run the engine per value) is slower, and `apply(lambda ...)` is slowest of all because it calls a Python function for every single value instead of staying in compiled code. Reach for the simplest one that does the job.
 
 ## Gotchas
 

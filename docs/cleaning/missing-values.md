@@ -82,11 +82,21 @@ The difference, shown on the gap between 9am's 20 and 12pm's 24:
 ## Under the hood
 
 !!! tip "New here? You have permission to skip this."
-    Find, drop, or fill is the whole job. Two behaviours worth knowing.
+    Find, drop, or fill is the whole job. This explains *what* a missing value actually is inside pandas, which is why the two behaviors below happen.
 
-**Aggregations skip `NaN` by default.** `mean()` and `sum()` ignore missing values silently, so a mean is taken over the present values only. That is usually what you want, but `sum()` quietly skipping holes can mislead. Pass `skipna=False` to make missing values propagate instead.
+**What `NaN` really is.** The default missing marker is `NaN`, short for "Not a Number". It is not a pandas invention; it is a special value built into the floating-point number standard that every computer uses, a reserved bit pattern that means "no real number here". Two consequences come straight from that:
 
-**`NaN` is never equal to anything, even itself.** `NaN == NaN` is `False`. That is why you must test with `isna()` rather than `== np.nan`, and it is the same reason [boolean filters silently drop missing rows](../selection/boolean-indexing.md).
+- It is a **float**, so it can only live in a float column. This is why a single missing value turns an integer column into `float64`: pandas has to switch to a type that has a slot for `NaN`.
+- The standard defines `NaN` as **not equal to anything, including itself**, so `NaN == NaN` is `False`. That is why you cannot find missing values with `== np.nan` and must use `isna()`, which checks for the special bit pattern directly instead of comparing.
+
+**How operations handle it.** Because `NaN` cannot be compared, pandas does not just compute over it. Reductions like `mean()` and `sum()` run a **mask-first** step: they look at which positions hold `NaN`, set those positions aside, and compute over the rest. This is the `skipna=True` default. So a `mean` is the average of the **present** values only, not of all the rows.
+
+```python
+pd.Series([10, 20, None]).mean()
+# 15.0      <- (10 + 20) / 2, the NaN position is skipped, not counted as 0
+```
+
+That is usually what you want, but `sum()` quietly skipping holes can mislead. Pass `skipna=False` to turn the masking off, and any `NaN` in the data spreads into the result instead. The same "compare to `NaN` gives nothing" rule is why [boolean filters silently drop missing rows](../selection/boolean-indexing.md).
 
 ## Gotchas
 

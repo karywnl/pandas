@@ -28,6 +28,8 @@ scores
 
 Two students, three subject columns. The subject ("math", "english", "science") lives in the column headers, not in the data. We want to pull it down into a real column.
 
+This is what a well-known guideline for table design (the "tidy data" rules) is about: each variable should be its own column, and each observation its own row. The table above breaks the rule, because the subject is really a variable but its values are sitting in the column *names*. Melting moves them into a real `subject` column, so the table becomes tidy. That is the deeper reason melt matters: it is not just reshaping, it puts the data into the shape the rest of pandas is built to consume.
+
 ## Picture it
 
 ```text
@@ -171,19 +173,56 @@ You are back to one row per student and one column per subject. Two honest cavea
 ## Under the hood
 
 !!! tip "New here? You have permission to skip this."
-    "`id_vars` to keep, `value_vars` to fold down, name the two new columns" is the whole chapter. Come back for these details when a melt surprises you.
+    "`id_vars` to keep, `value_vars` to fold down, name the two new columns" is the whole chapter. Come back here when you want to know *how* melt builds the result, which explains the row order, the row count, and the dtype surprise below.
 
-**Why long format is the "tidy" shape.** There is a well-known guideline for table design (the "tidy data" rules) that says each variable should be its own column and each observation its own row. Wide `scores` breaks it: `subject` is really a variable, but its values are hiding as column *names* (`math`, `english`). Melting moves them into a real `subject` column, so the table becomes tidy, and tidy tables are what `groupby`, filters, and plotting libraries are built to consume. That is the deeper reason melt matters: it is not just reshaping, it is putting the data into the shape the rest of pandas expects.
+**How melt builds the long table.** Melt does not move cells around one by one. It treats each value column as a whole **block** of values and builds the three output columns by stacking and repeating those blocks. Picture the three subject columns of `scores`, each a block of `n = 2` values (one per student):
 
-**Mixing value columns of different types gives `object`.** `melt` stacks all the value columns into one. If those columns hold different types, that single column has to hold all of them at once, and the only type that can is the catch-all `object`:
+```text
+the 3 value columns, each a vertical block of n = 2 values:
+
+  +------+---------+---------+
+  | math | english | science |
+  +------+---------+---------+
+  | 90   | 85      | 88      |
+  | 78   | 92      | 81      |
+  +------+---------+---------+
+
+        |  melt stacks the blocks one below another
+        v
+
+  score   = the blocks joined end to end (n x k = 6 values)
+  subject = each block's name, repeated n times to label its block
+  student = the id block, repeated once per value column
+
+  +---------+---------+-------+
+  | student | subject | score |
+  +---------+---------+-------+
+  | Alice   | math    | 90    |   <- math block
+  | Bob     | math    | 78    |
+  | Alice   | english | 85    |   <- english block
+  | Bob     | english | 92    |
+  | Alice   | science | 88    |   <- science block
+  | Bob     | science | 81    |
+  +---------+---------+-------+
+```
+
+Walk down the result one block at a time. The `score` column is the `math` block, then the `english` block, then the `science` block, joined end to end. The `subject` column labels each block by repeating its name `n` times (`math` twice, then `english` twice, then `science` twice). The `student` column copies the whole `[Alice, Bob]` id block once for every value column, so each value still lines up with the student it came from.
+
+That single mechanism explains three things you saw earlier:
+
+- **The order** (all `math` rows, then all `english`, then all `science`) is just the order the blocks were stacked. Melt never groups by student.
+- **The row count** is `n x k`: `k` blocks of `n` values each, giving `2 x 3 = 6` rows.
+- **The dtype** can collapse, which is the next point.
+
+**Why mixing value types gives `object`.** Because the `score` column is one block of values joined from several columns, it is a **single** column, and a single column can hold only one type. If the value columns you stacked held different types, pandas has to find one type that fits all of them, and the only one that always fits is the catch-all `object`:
 
 ```python
 mix = pd.DataFrame({"id": [1], "a": [10], "b": ["hi"]})
 pd.melt(mix, id_vars=["id"], value_vars=["a", "b"])["value"].dtype
-# dtype('O')   <- object: a number and a string stacked together
+# dtype('O')   <- object: a number and a string stacked into one column
 ```
 
-So melt columns that belong together (all scores, all prices), not a mix of unrelated types, or you lose the clean dtype. This is the same idea you saw when [concatenating mismatched columns](../combining/concat.md).
+So melt columns that belong together (all scores, all prices), not a mix of unrelated types, or the joined column loses its clean dtype. This is the same idea you saw when [concatenating mismatched columns](../combining/concat.md).
 
 ## Gotchas
 
@@ -213,6 +252,7 @@ So melt columns that belong together (all scores, all prices), not a mix of unre
 
 !!! connect "Reshaping, both directions"
     - `melt` is the exact inverse of [pivot tables](pivot.md): melt folds columns down into rows, pivot spreads rows out into columns.
+    - The index based version of this reshape is [unstack](unstack.md) (long to wide) and its inverse `stack`: same idea as pivot and melt, but driven by the row index instead of named columns.
     - Long format is what [GroupBy](groupby.md) and [aggregation](aggregation.md) are built for, so melting is often the step that makes a wide table groupable.
     - Cleaning the folded name column uses [string replacement](../cleaning/replace.md), and moving the pivoted key back to a column uses [resetting the index](../indexing/reset-index.md).
     - Stacking value columns of different types collapses to `object`, the same dtype rule you met in [concatenate](../combining/concat.md).

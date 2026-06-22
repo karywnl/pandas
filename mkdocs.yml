@@ -2,7 +2,7 @@ site_name: Pandas
 site_description: A beginner-first, visual, deeply connected guide to pandas.
 site_author: kary
 site_url: https://karywnl.github.io/pandas/
-copyright: Written for pandas 3.0 &middot; last reviewed June 2026
+copyright: Written for pandas 3.0.3 &middot; last reviewed June 2026
 
 theme:
   name: material
@@ -104,6 +104,7 @@ nav:
       - Pivot tables: grouping/pivot.md
       - Cross tabulation: grouping/crosstab.md
       - Melt (wide to long): grouping/melt.md
+      - Unstack (long to wide): grouping/unstack.md
   - Combining data:
       - Merge DataFrames: combining/merge.md
       - Concatenate DataFrames: combining/concat.md

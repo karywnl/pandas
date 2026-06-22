@@ -65,11 +65,22 @@ To keep the **most recent** record per email, sort first so the one you want lan
 ## Under the hood
 
 !!! tip "New here? You have permission to skip this."
-    Subset plus keep covers almost every case. Two tricky points.
+    Subset plus keep covers almost every case. This explains *how* pandas spots a repeat, which is also why the two surprises below happen.
 
-**`NaN` counts as equal here.** Unlike normal `NaN` comparisons, `drop_duplicates` treats two missing values as matching, so rows `[NaN, 1]` and `[NaN, 1]` are duplicates. This is the one place `NaN` does not behave the way it usually does.
+**How it finds duplicates.** `drop_duplicates` does not compare every row against every other row (that would be slow). It walks the rows **once**, turns the chosen columns of each row into a single **key** (a short number computed from the values, called a **hash**), and keeps a record of the keys it has already seen. A new key means a new row, so it is kept. A key already in the record means a repeat, so it is dropped. Follow it on `signups` with `subset=["email"]`:
 
-**Floats may not match exactly.** `0.1 + 0.2` is not exactly `0.3` in floating point, so values that look identical may not dedupe. Round first if you are deduping on computed floats.
+```text
+  row 0  email a@x.com  -> key A   new    -> keep,  remember A
+  row 1  email b@x.com  -> key B   new    -> keep,  remember B
+  row 2  email a@x.com  -> key A   seen   -> drop
+```
+
+Row 2's email gives the same key `A` that row 0 already registered, so it is the duplicate. One pass, no row-against-row comparing, which is why dedupe stays fast on millions of rows.
+
+Two surprises fall straight out of this key-matching:
+
+- **`NaN` counts as equal here.** Matching is by key, not by the usual `==`. Two missing values produce the **same** key, so `drop_duplicates` treats them as identical, even though `NaN == NaN` is `False` everywhere else in pandas.
+- **Floats may not match.** `0.1 + 0.2` is not exactly `0.3` in floating point, so two numbers that *print* the same can differ in their last bit, produce **different** keys, and survive as separate rows. Round computed floats before deduping on them.
 
 After dropping, the index keeps its old numbers and gets gaps, so chain `.reset_index(drop=True)` for a clean run, the same cleanup from [resetting the index](../indexing/reset-index.md).
 

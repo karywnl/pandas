@@ -64,11 +64,21 @@ df = df.astype({"qty": "int64", "price": "float64"})
 ## Under the hood
 
 !!! tip "New here? You have permission to skip this."
-    `astype` and the `to_*` functions cover the daily work. Two efficiency notes.
+    `astype` and the `to_*` functions cover the daily work. This explains *how* a conversion happens, which is why you reassign the result and why `category` saves so much memory.
 
-**Low-variety text to `category`.** A column with millions of rows but a handful of distinct values shrinks dramatically as `category`, which stores each label once plus tiny codes. `df["status"] = df["status"].astype("category")`.
+**How a conversion runs.** `astype` does not change the existing column in place; it returns a **new** column, which is why you must reassign (`df["qty"] = df["qty"].astype(int)`) or the conversion is lost. What it does to the data depends on whether the type really changes its representation. When the new type stores values differently (`int64` to `float64`, parsing text to numbers, a different byte size), pandas allocates a new block of memory and converts each value into it one at a time. When the target type needs no real change to the stored bytes, pandas can hand back a **view** of the same data instead of copying. Because the converting case re-builds each value, it can also change data: `float64` to `int` drops the decimal part, and a value too big for the target type overflows. `to_numeric` and `to_datetime` are the same idea for text: they read each string and build a number or a timestamp from it, with `errors="coerce"` writing `NaN` wherever a string cannot be parsed.
 
-**Downcasting numbers.** `pd.to_numeric(col, downcast="integer")` picks the smallest integer type that fits, turning `int64` into `int8` when values are small. Be careful: if future data exceeds the smaller range, it overflows silently.
+**Why `category` is cheap.** Converting to `category` does not store the text for every row. It builds **two** small structures: a list of the distinct values (the *categories*), and an array of tiny integers (the *codes*) where each row holds the position of its value in that list. A million-row `status` column with three distinct values then stores three strings plus a million one-byte codes, instead of a million separate strings.
+
+```text
+  status (object): "open","closed","open","open","closed"   <- a full string per row
+
+  status (category):
+     categories: ["closed", "open"]        <- each label stored once
+     codes:      [1, 0, 1, 1, 0]           <- one tiny int per row, points into the list
+```
+
+This is also why **downcasting** numbers (`pd.to_numeric(col, downcast="integer")`) shrinks data: it picks the smallest integer type whose range still fits the values, turning `int64` (8 bytes per value) into `int8` (1 byte). The smaller range is the catch: if later data exceeds it, the value overflows silently.
 
 ## Gotchas
 

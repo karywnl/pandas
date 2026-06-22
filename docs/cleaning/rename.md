@@ -55,9 +55,23 @@ Prefixes and suffixes are great for tagging columns before a merge so you can te
 ## Under the hood
 
 !!! tip "New here? You have permission to skip this."
-    The two tools above (dict for specific, `.str` for all) cover everything. One reliability tip.
+    The two tools above (dict for specific, `.str` for all) cover everything. This explains *how* `rename` rebuilds the labels, which is why a typo passes silently and why you must reassign.
 
-`rename` **silently ignores** old names that do not exist, so a typo in the key does nothing and raises no error, which can leave you puzzled when a rename "did not work". Pass `errors="raise"` to make a missing key complain instead. And remember it returns a new frame: without reassignment or `inplace=True`, the rename is lost.
+**How `rename` rebuilds the labels.** `rename` does not edit the existing column labels in place. It builds a **new** list of labels by passing every current label through your map one by one: if a label is a key in the dict, it is swapped for the new value; if it is **not** in the dict, it passes through unchanged. It then returns a new frame that points at the same underlying data but carries the new labels.
+
+```text
+  current columns:  "First Name"   "AGE "      "city"
+  your map:         {"First Name": "first_name"}
+                         |            |            |
+  pass each through:  in map        not in map   not in map
+                         v            v            v
+  new columns:      "first_name"    "AGE "      "city"
+```
+
+Two behaviors follow from "every label is passed through, matched or not":
+
+- **A typo in a key is silently ignored.** If you write `{"frist_name": ...}`, that key matches no current label, so nothing is swapped and no error is raised, which looks like the rename "did nothing". Pass `errors="raise"` to make an unmatched key complain instead.
+- **You must capture the result.** Because `rename` returns a **new** frame rather than changing the original, the rename is lost unless you reassign it (`df = df.rename(...)`).
 
 A good naming convention helps everywhere: `snake_case`, all lowercase, no spaces, descriptive. It avoids quoting, avoids case-sensitivity bugs in joins, and keeps dot access from breaking.
 

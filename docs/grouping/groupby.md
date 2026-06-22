@@ -77,13 +77,24 @@ sales.groupby("region", as_index=False)["revenue"].sum()
 ## Under the hood
 
 !!! tip "New here? You have permission to skip this."
-    Split-apply-combine is the whole idea. Two important details.
+    Split-apply-combine is the whole idea. This explains *how* pandas splits the rows without a slow loop, which is why grouping is fast and why `groupby` alone computes nothing.
 
-**`count` vs `size`.** `size` counts every row in the group, including missing values. `count` counts only the non-null values, per column. For "how many rows in this group", you almost always want `size`.
+**How the groups are actually formed.** The "Picture it" diagram shows rows being split into separate piles, but pandas does not really copy rows into separate tables. It does something cheaper: it scans the key column **once** and gives each distinct key a small **group number** (this step is called *factorizing*). Then it records which group number each row belongs to.
 
-**Select columns before aggregating.** `sales.groupby("region").sum()` aggregates *every* numeric column, which is often more than you wanted and slower. Selecting `["revenue"]` first tells pandas to compute only what you need.
+```text
+  region column:   East   East   West   West   East
+  number the keys: East -> 0,  West -> 1
+  group id per row:  0      0      1      1      0
+```
 
-By default, groups with a missing key are dropped. Pass `dropna=False` to keep a group for the `NaN` key.
+That list of group numbers is all the GroupBy object holds. This is why `groupby` on its own computes nothing: it has only labeled the rows, not done any maths. The work happens when you call an aggregation. `.sum()` then runs one compiled pass over the `revenue` values, adding each value into its group's running total using the group number as the slot:
+
+```text
+  group 0 (East): 100 + 60 + 70 = 230
+  group 1 (West):  80 + 130     = 210
+```
+
+One scan to number the rows, one scan to total them, both in compiled C, with no row copying. That is the "fast because the looping happens in C" claim made concrete. The handling of missing keys falls out of this too: a row whose key is `NaN` is given **no** group number and is dropped by default. Pass `dropna=False` to give the `NaN` key its own group instead.
 
 ## Gotchas
 
